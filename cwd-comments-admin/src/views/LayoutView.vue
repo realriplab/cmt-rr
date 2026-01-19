@@ -10,7 +10,6 @@
         >
           Github
         </a>
-        <button class="layout-button" @click="goSettings">设置</button>
         <button class="layout-button" @click="handleLogout">退出</button>
       </div>
     </header>
