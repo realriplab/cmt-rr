@@ -30,10 +30,10 @@ export class CommentItem extends Component {
     this.childCommentItems = []; // 缓存嵌套回复的 CommentItem 实例
   }
 
-  render() {
+		render() {
     const { comment, isReply, adminEmail, adminBadge } = this.props;
     const isReplying = this.props.replyingTo === comment.id;
-    const isAdmin = adminEmail && comment.email === adminEmail;
+    const isAdmin = adminEmail && adminBadge && comment.email === adminEmail;
 
     const root = this.createElement('div', {
       className: `cwd-comment-item ${isReply ? 'cwd-comment-reply' : ''}`,

@@ -289,7 +289,7 @@ export class CWDComments {
 				replyError: state.replyError,
 				submitting: state.submitting,
 				adminEmail: this.config.adminEmail,
-				adminBadge: this.config.adminBadge || '博主',
+				adminBadge: this.config.adminBadge,
 				onRetry: () => this.store.loadComments(),
 				onReply: (commentId) => this.store.startReply(commentId),
 				onSubmitReply: (commentId) => this.store.submitReply(commentId),
