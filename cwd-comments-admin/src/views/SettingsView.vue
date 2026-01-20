@@ -1,31 +1,15 @@
 <template>
   <div class="page">
     <h2 class="page-title">系统设置</h2>
+    <div
+      v-if="toastVisible"
+      class="toast"
+      :class="toastType === 'error' ? 'toast-error' : 'toast-success'"
+    >
+      {{ toastMessage }}
+    </div>
     <div v-if="loading" class="page-hint">加载中...</div>
     <div v-else>
-      <div class="card">
-        <h3 class="card-title">通知邮箱设置</h3>
-        <div class="form-item">
-          <label class="form-label">管理员通知邮箱</label>
-          <input v-model="email" class="form-input" type="email" />
-        </div>
-        <div
-          v-if="message"
-          :class="[
-            'form-message',
-            messageType === 'error' ? 'form-message-error' : 'form-message-success',
-          ]"
-        >
-          {{ message }}
-        </div>
-        <div class="card-actions">
-          <button class="card-button" :disabled="savingEmail" @click="saveEmail">
-            <span v-if="savingEmail">保存中...</span>
-            <span v-else>保存</span>
-          </button>
-        </div>
-      </div>
-
       <div class="card">
         <h3 class="card-title">评论显示配置</h3>
         <div class="form-item">
@@ -54,6 +38,26 @@
           </button>
         </div>
       </div>
+
+      <div class="card">
+        <h3 class="card-title">通知邮箱设置</h3>
+        <div class="form-item">
+          <label class="form-label">管理员通知邮箱</label>
+          <input v-model="email" class="form-input" type="email" />
+        </div>
+        <div
+          v-if="message && messageType === 'error'"
+          class="form-message form-message-error"
+        >
+          {{ message }}
+        </div>
+        <div class="card-actions">
+          <button class="card-button" :disabled="savingEmail" @click="saveEmail">
+            <span v-if="savingEmail">保存中...</span>
+            <span v-else>保存</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -77,6 +81,18 @@ const savingComment = ref(false);
 const loading = ref(false);
 const message = ref("");
 const messageType = ref<"success" | "error">("success");
+const toastMessage = ref("");
+const toastType = ref<"success" | "error">("success");
+const toastVisible = ref(false);
+
+function showToast(msg: string, type: "success" | "error" = "success") {
+  toastMessage.value = msg;
+  toastType.value = type;
+  toastVisible.value = true;
+  window.setTimeout(() => {
+    toastVisible.value = false;
+  }, 2000);
+}
 
 async function load() {
   loading.value = true;
@@ -108,8 +124,7 @@ async function saveEmail() {
   message.value = "";
   try {
     const res = await saveAdminEmail(email.value);
-    message.value = res.message || "保存成功";
-    messageType.value = "success";
+    showToast(res.message || "保存成功", "success");
   } catch (e: any) {
     message.value = e.message || "保存失败";
     messageType.value = "error";
@@ -128,8 +143,7 @@ async function saveComment() {
       avatarPrefix: avatarPrefix.value,
       adminEnabled: commentAdminEnabled.value,
     });
-    message.value = res.message || "保存成功";
-    messageType.value = "success";
+    showToast(res.message || "保存成功", "success");
   } catch (e: any) {
     message.value = e.message || "保存失败";
     messageType.value = "error";
@@ -162,6 +176,7 @@ onMounted(() => {
   border-radius: 6px;
   border: 1px solid #d0d7de;
   padding: 16px 18px;
+  margin-bottom: 1em;
 }
 
 .card-title {
@@ -192,6 +207,30 @@ onMounted(() => {
 .form-input:focus {
   border-color: #0969da;
   box-shadow: 0 0 0 1px rgba(9, 105, 218, 0.2);
+}
+
+.toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 220px;
+  max-width: 320px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  box-shadow: 0 8px 24px rgba(140, 149, 159, 0.2);
+  z-index: 1000;
+}
+
+.toast-success {
+  background-color: #1a7f37;
+  color: #ffffff;
+}
+
+.toast-error {
+  background-color: #d1242f;
+  color: #ffffff;
 }
 
 .switch {

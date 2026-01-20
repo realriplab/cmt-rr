@@ -32,7 +32,7 @@ async function loadCommentSettings(env: Bindings) {
 		COMMENT_ADMIN_ENABLED_KEY
 	];
 	const { results } = await env.CWD_DB.prepare(
-		'SELECT key, value FROM Settings WHERE key IN (?, ?, ?)'
+		'SELECT key, value FROM Settings WHERE key IN (?, ?, ?, ?)'
 	)
 		.bind(...keys)
 		.all<{ key: string; value: string }>();
