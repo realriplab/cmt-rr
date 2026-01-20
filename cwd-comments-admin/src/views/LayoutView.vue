@@ -8,7 +8,7 @@
           href="https://cwd-comments-docs.zishu.me"
           target="_blank"
         >
-          文档
+          使用文档
         </a>
         <a
           class="layout-button"

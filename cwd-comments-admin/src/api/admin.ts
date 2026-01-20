@@ -42,8 +42,6 @@ export type CommentSettingsResponse = {
 
 export type EmailNotifySettingsResponse = {
 	globalEnabled: boolean;
-	adminEnabled: boolean;
-	userEnabled: boolean;
 };
 
 export async function loginAdmin(name: string, password: string): Promise<string> {
@@ -83,8 +81,6 @@ export function fetchEmailNotifySettings(): Promise<EmailNotifySettingsResponse>
 
 export function saveEmailNotifySettings(data: {
 	globalEnabled?: boolean;
-	adminEnabled?: boolean;
-	userEnabled?: boolean;
 }): Promise<{ message: string }> {
 	return put<{ message: string }>('/admin/settings/email-notify', data);
 }

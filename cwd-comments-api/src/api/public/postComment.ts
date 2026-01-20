@@ -114,9 +114,7 @@ export const postComment = async (c: Context<{ Bindings: Bindings }>) => {
     });
 
     let notifySettings: EmailNotificationSettings = {
-      globalEnabled: true,
-      adminEnabled: true,
-      userEnabled: true
+      globalEnabled: true
     };
     try {
       notifySettings = await loadEmailNotificationSettings(c.env);
@@ -157,29 +155,25 @@ export const postComment = async (c: Context<{ Bindings: Bindings }>) => {
               }
               
               if (canSendUserMail && isValidEmail(parentComment.email)) {
-                if (!notifySettings.userEnabled) {
-                  console.log('PostComment:mailDispatch:userReply:disabledByConfig');
-                } else {
-                  console.log('PostComment:mailDispatch:userReply:send', {
-                    toEmail: parentComment.email,
-                    toName: parentComment.author
-                  });
-                  await sendCommentReplyNotification(c.env, {
-                    toEmail: parentComment.email,
-                    toName: parentComment.author,
-                    postTitle: data.post_title,
-                    parentComment: parentComment.content_text,
-                    replyAuthor: author,
-                    replyContent: content,
-                    postUrl: data.post_url,
-                  });
-                  await c.env.CWD_DB.prepare(
-                    "INSERT INTO EmailLog (recipient, type, ip_address, created_at) VALUES (?, ?, ?, ?)"
-                  ).bind(parentComment.email, 'user-reply', ip, new Date().toISOString()).run();
-                  console.log('PostComment:mailDispatch:userReply:logInserted', {
-                    toEmail: parentComment.email
-                  });
-                }
+                console.log('PostComment:mailDispatch:userReply:send', {
+                  toEmail: parentComment.email,
+                  toName: parentComment.author
+                });
+                await sendCommentReplyNotification(c.env, {
+                  toEmail: parentComment.email,
+                  toName: parentComment.author,
+                  postTitle: data.post_title,
+                  parentComment: parentComment.content_text,
+                  replyAuthor: author,
+                  replyContent: content,
+                  postUrl: data.post_url,
+                });
+                await c.env.CWD_DB.prepare(
+                  "INSERT INTO EmailLog (recipient, type, ip_address, created_at) VALUES (?, ?, ?, ?)"
+                ).bind(parentComment.email, 'user-reply', ip, new Date().toISOString()).run();
+                console.log('PostComment:mailDispatch:userReply:logInserted', {
+                  toEmail: parentComment.email
+                });
               }
             }
           } else {
@@ -188,21 +182,17 @@ export const postComment = async (c: Context<{ Bindings: Bindings }>) => {
             ).first<{ created_at: string }>();
             const canSendAdminMail = !adminEmailRow || (Date.now() - new Date(adminEmailRow.created_at).getTime() > 15 * 1000);
             if (canSendAdminMail) {
-              if (!notifySettings.adminEnabled) {
-                console.log('PostComment:mailDispatch:admin:disabledByConfig');
-              } else {
-                console.log('PostComment:mailDispatch:admin:send');
-                await sendCommentNotification(c.env, {
-                  postTitle: data.post_title,
-                  postUrl: data.post_url,
-                  commentAuthor: author,
-                  commentContent: content
-                });
-                await c.env.CWD_DB.prepare(
-                  "INSERT INTO EmailLog (recipient, type, ip_address, created_at) VALUES (?, ?, ?, ?)"
-                ).bind('admin', 'admin-notify', ip, new Date().toISOString()).run();
-                console.log('PostComment:mailDispatch:admin:logInserted');
-              }
+              console.log('PostComment:mailDispatch:admin:send');
+              await sendCommentNotification(c.env, {
+                postTitle: data.post_title,
+                postUrl: data.post_url,
+                commentAuthor: author,
+                commentContent: content
+              });
+              await c.env.CWD_DB.prepare(
+                "INSERT INTO EmailLog (recipient, type, ip_address, created_at) VALUES (?, ?, ?, ?)"
+              ).bind('admin', 'admin-notify', ip, new Date().toISOString()).run();
+              console.log('PostComment:mailDispatch:admin:logInserted');
             }
             if (!canSendAdminMail) {
               console.log('PostComment:mailDispatch:admin:skippedByRateLimit');

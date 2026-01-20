@@ -5,8 +5,6 @@ export function isValidEmail(email: string) {
 }
 
 const EMAIL_NOTIFY_GLOBAL_KEY = 'email_notify_enabled';
-const EMAIL_NOTIFY_ADMIN_KEY = 'email_notify_admin_enabled';
-const EMAIL_NOTIFY_USER_KEY = 'email_notify_user_enabled';
 
 type MailGatewayPayload = {
   to: string[];
@@ -44,8 +42,6 @@ async function dispatchMail(env: Bindings, payload: MailGatewayPayload) {
 
 export type EmailNotificationSettings = {
   globalEnabled: boolean;
-  adminEnabled: boolean;
-  userEnabled: boolean;
 };
 
 function parseEnabled(raw: string | undefined, defaultValue: boolean) {
@@ -60,11 +56,10 @@ export async function loadEmailNotificationSettings(
     'CREATE TABLE IF NOT EXISTS Settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)'
   ).run();
 
-  const keys = [EMAIL_NOTIFY_GLOBAL_KEY, EMAIL_NOTIFY_ADMIN_KEY, EMAIL_NOTIFY_USER_KEY];
   const { results } = await env.CWD_DB.prepare(
-    'SELECT key, value FROM Settings WHERE key IN (?, ?, ?)'
+    'SELECT key, value FROM Settings WHERE key = ?'
   )
-    .bind(...keys)
+    .bind(EMAIL_NOTIFY_GLOBAL_KEY)
     .all<{ key: string; value: string }>();
 
   const map = new Map<string, string>();
@@ -75,13 +70,9 @@ export async function loadEmailNotificationSettings(
   }
 
   const globalEnabled = parseEnabled(map.get(EMAIL_NOTIFY_GLOBAL_KEY), true);
-  const adminEnabled = globalEnabled;
-  const userEnabled = globalEnabled;
 
   return {
-    globalEnabled,
-    adminEnabled,
-    userEnabled
+    globalEnabled
   };
 }
 
@@ -89,50 +80,23 @@ export async function saveEmailNotificationSettings(
   env: Bindings,
   settings: {
     globalEnabled?: boolean;
-    adminEnabled?: boolean;
-    userEnabled?: boolean;
   }
 ) {
   await env.CWD_DB.prepare(
     'CREATE TABLE IF NOT EXISTS Settings (key TEXT PRIMARY KEY, value TEXT NOT NULL)'
   ).run();
 
-  const entries: { key: string; value: string | undefined }[] = [
-    {
-      key: EMAIL_NOTIFY_GLOBAL_KEY,
-      value:
-        typeof settings.globalEnabled === 'boolean'
-          ? settings.globalEnabled
-            ? '1'
-            : '0'
-          : undefined
-    },
-    {
-      key: EMAIL_NOTIFY_ADMIN_KEY,
-      value:
-        typeof settings.adminEnabled === 'boolean'
-          ? settings.adminEnabled
-            ? '1'
-            : '0'
-          : undefined
-    },
-    {
-      key: EMAIL_NOTIFY_USER_KEY,
-      value:
-        typeof settings.userEnabled === 'boolean'
-          ? settings.userEnabled
-            ? '1'
-            : '0'
-          : undefined
-    }
-  ];
+  const value =
+    typeof settings.globalEnabled === 'boolean'
+      ? settings.globalEnabled
+        ? '1'
+        : '0'
+      : undefined;
 
-  for (const entry of entries) {
-    if (entry.value !== undefined) {
-      await env.CWD_DB.prepare('REPLACE INTO Settings (key, value) VALUES (?, ?)')
-        .bind(entry.key, entry.value)
-        .run();
-    }
+  if (value !== undefined) {
+    await env.CWD_DB.prepare('REPLACE INTO Settings (key, value) VALUES (?, ?)')
+      .bind(EMAIL_NOTIFY_GLOBAL_KEY, value)
+      .run();
   }
 }
 
