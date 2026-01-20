@@ -45,9 +45,14 @@
             <div class="cell-content-text">{{ item.contentText }}</div>
           </div>
           <div class="table-cell table-cell-path">
-            <span class="cell-path" :title="item.postSlug">{{ item.postSlug }}</span>
+            <a
+              :href="item.postSlug"
+              target="_blank"
+              class="cell-path"
+              :title="item.postSlug"
+              >{{ item.postSlug }}</a
+            >
           </div>
-
           <div class="table-cell table-cell-status">
             <span class="cell-status" :class="`cell-status-${item.status}`">
               {{ formatStatus(item.status) }}
@@ -291,6 +296,7 @@ onMounted(() => {
   color: #24292f;
   display: flex;
   align-items: center;
+  box-sizing: border-box;
 }
 
 .table-cell-id {
@@ -300,17 +306,20 @@ onMounted(() => {
 }
 
 .table-cell-author {
-  width: 180px;
+  width: 220px;
   flex-shrink: 0;
 }
 
 .table-cell-content {
+  flex-direction: column;
   flex: 1;
+  align-items: flex-start !important;
+  justify-content: center;
   min-width: 200px;
 }
 
 .table-cell-path {
-  width: 160px;
+  width: 240px;
   flex-shrink: 0;
 }
 
@@ -320,7 +329,7 @@ onMounted(() => {
 }
 
 .table-cell-status {
-  width: 80px;
+  width: 100px;
   flex-shrink: 0;
   justify-content: center;
   align-items: center;
@@ -331,6 +340,7 @@ onMounted(() => {
   flex-shrink: 0;
   justify-content: flex-start;
   align-items: center;
+  width: 250px;
 }
 
 .table-header .table-cell {
@@ -362,14 +372,20 @@ onMounted(() => {
   line-height: 1.5;
   white-space: pre-wrap;
   word-break: break-word;
+  margin-bottom: 5px;
 }
 
 .cell-path {
   font-size: 12px;
-  color: #57606a;
+  color: #2774cb;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-decoration: none;
+}
+
+.cell-path:hover {
+  text-decoration: underline;
 }
 
 .cell-time {
