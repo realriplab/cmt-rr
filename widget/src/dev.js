@@ -11,8 +11,8 @@ const STORAGE_KEY = 'cwd-dev-config';
 const DEFAULT_CONFIG = {
 	el: '#comments',
 	apiBaseUrl: 'http://localhost:8788',
-	postSlug: window.location.pathname,
-	theme: 'light',
+	postSlug: window.location.origin + window.location.pathname,
+	theme: 'light', // 默认 light / dark
 };
 
 let widgetInstance = null;
