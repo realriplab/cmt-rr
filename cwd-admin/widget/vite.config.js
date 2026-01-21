@@ -1,6 +1,10 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import { readFileSync } from 'fs';
 import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
+
+const pkg = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf-8'));
+const banner = `/*! CWDComments widget v${pkg.version} */`;
 
 export default defineConfig({
 	plugins: [cssInjectedByJsPlugin()],
@@ -19,6 +23,7 @@ export default defineConfig({
 		rollupOptions: {
 			output: {
 				exports: 'named',
+				banner,
 			},
 		},
 		sourcemap: false,
