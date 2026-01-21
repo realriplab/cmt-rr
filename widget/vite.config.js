@@ -14,7 +14,7 @@ export default defineConfig({
 			name: 'CWDComments',
 			entry: resolve(__dirname, 'src/index.js'),
 			formats: ['umd'],
-			fileName: (format) => `cwd-comments.js`,
+			fileName: (format) => `cwd.js`,
 		},
 		rollupOptions: {
 			output: {

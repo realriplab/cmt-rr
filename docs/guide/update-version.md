@@ -5,7 +5,7 @@
 ## 接口更新
 
 ```
-cd cwd-comments-api
+cd cwd-api
 npm install
 npm run deploy
 ```
@@ -15,7 +15,7 @@ npm run deploy
 ## 后台更新
 
 ```
-cd cwd-comments-admin
+cd cwd-admin
 npm install
 npm run build
 ```
@@ -24,8 +24,8 @@ npm run build
 
 ## 评论端更新
 
-使用最新的 `cwd-comments.js` ，你可以托管到任何地方，不受限制。
+使用最新的 `cwd.js` ，你可以托管到任何地方，不受限制。
 
-如果你不想自己托管，请使用官方的链接: `https://cwd-comments.zishu.me/cwd-comments.js`
+如果你不想自己托管，请使用官方的链接：`https://cwd.zishu.me/cwd.js`
 
 不需要手动更新，每次评论端加载时会自动检查更新。

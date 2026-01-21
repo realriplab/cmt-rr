@@ -6,14 +6,14 @@
 * 拥有一个 Node.js 运行环境，版本 >= 22（本地部署需要）
 * 拥有一个域名并托管在 Cloudflare 上（这个不是必须项，但可以提高国内访问速度，也更方便）
 
-后端项目目录为 `/cwd-comments-api`，基于 Cloudflare Workers + D1 + KV 实现。
+后端项目目录为 `/cwd-api`，基于 Cloudflare Workers + D1 + KV 实现。
 
 ## 自部署
 
 **以下部署指令均在该目录下执行，不在根目录下**
 
 ```
-cd cwd-comments-api
+cd cwd-api
 ```
 
 ### 本地部署
@@ -81,7 +81,7 @@ npm install
   npm run deploy
   ```
 
-没有异常报错后，可以进入 Cloudflare Workers 面板查看是否部署成功，若显示存在一个名称为 `cwd-comments-api` 的项目即推送成功。
+没有异常报错后，可以进入 Cloudflare Workers 面板查看是否部署成功，若显示存在一个名称为 `cwd-api` 的项目即推送成功。
 
 #### 3. 配置环境变量
 
@@ -91,7 +91,7 @@ npm install
 
 #### 4. 检测部署情况
 
-部署成功后回得到一个域名，即为后端的域名（格式一般为`https://cwd-comments-api.xxx.workers.dev`。访问该域名，如果显示部署成功页面，说明 API 部署成功，可以到管理后台进行登录，当然也可以使用自定义域名。
+部署成功后回得到一个域名，即为后端的域名（格式一般为`https://cwd-api.xxx.workers.dev`。访问该域名，如果显示部署成功页面，说明 API 部署成功，可以到管理后台进行登录，当然也可以使用自定义域名。
 
 可以直接访问域名，确认是否部署成功。如果成功，则会显示 
 
@@ -101,7 +101,7 @@ CWD 评论部署成功，当前版本...
 
 ## 环境变量与绑定
 
-后端通过 Cloudflare Worker 的绑定和环境变量控制行为，类型定义见 [`cwd-comments-api/src/bindings.ts`](../../cwd-comments-api/src/bindings.ts)。
+后端通过 Cloudflare Worker 的绑定和环境变量控制行为，类型定义见 `cwd-api/src/bindings.ts`.
 
 所需环境变量如下表所示。
 

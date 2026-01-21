@@ -1,7 +1,12 @@
 <template>
   <div class="layout">
     <header class="layout-header">
-      <button class="layout-menu-toggle" @click="toggleSider" aria-label="切换菜单" type="button">
+      <button
+        class="layout-menu-toggle"
+        @click="toggleSider"
+        aria-label="切换菜单"
+        type="button"
+      >
         <svg class="layout-menu-icon" viewBox="0 0 24 24" width="18" height="18">
           <path
             d="M4 7h16a1 1 0 0 0 0-2H4a1 1 0 0 0 0 2zm0 6h16a1 1 0 0 0 0-2H4a1 1 0 0 0 0 2zm0 6h16a1 1 0 0 0 0-2H4a1 1 0 0 0 0 2z"
@@ -12,18 +17,10 @@
       <div class="layout-title">CWD 评论后台</div>
       <div class="layout-actions-wrapper">
         <div class="layout-actions">
-          <a
-            class="layout-button"
-            href="https://cwd-comments-docs.zishu.me"
-            target="_blank"
-          >
+          <a class="layout-button" href="https://cwd-docs.zishu.me" target="_blank">
             使用文档
           </a>
-          <a
-            class="layout-button"
-            href="https://github.com/anghunk/cwd-comments"
-            target="_blank"
-          >
+          <a class="layout-button" href="https://github.com/anghunk/cwd" target="_blank">
             Github
           </a>
           <button class="layout-button" @click="handleLogout">退出</button>
@@ -48,14 +45,21 @@
           <button class="layout-actions-item" type="button" @click="openGithub">
             Github
           </button>
-          <button class="layout-actions-item layout-actions-item-danger" type="button" @click="handleLogoutFromActions">
+          <button
+            class="layout-actions-item layout-actions-item-danger"
+            type="button"
+            @click="handleLogoutFromActions"
+          >
             退出
           </button>
         </div>
       </div>
     </header>
     <div class="layout-body">
-      <nav class="layout-sider" :class="{ 'layout-sider-mobile-open': isMobileSiderOpen }">
+      <nav
+        class="layout-sider"
+        :class="{ 'layout-sider-mobile-open': isMobileSiderOpen }"
+      >
         <ul class="menu">
           <li
             class="menu-item"
@@ -80,11 +84,7 @@
           </li>
         </ul>
       </nav>
-      <div
-        v-if="isMobileSiderOpen"
-        class="layout-sider-mask"
-        @click="closeSider"
-      />
+      <div v-if="isMobileSiderOpen" class="layout-sider-mask" @click="closeSider" />
       <main class="layout-content">
         <router-view />
       </main>
@@ -139,12 +139,12 @@ function goSettings() {
 }
 
 function openDocs() {
-  window.open("https://cwd-comments-docs.zishu.me", "_blank");
+  window.open("https://cwd-docs.zishu.me", "_blank");
   closeActions();
 }
 
 function openGithub() {
-  window.open("https://github.com/anghunk/cwd-comments", "_blank");
+  window.open("https://github.com/anghunk/cwd", "_blank");
   closeActions();
 }
 

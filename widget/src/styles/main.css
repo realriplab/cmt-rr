@@ -13,7 +13,7 @@
 }
 
 /* ========== 容器 ========== */
-.cwd-comments-container {
+.cwd-container {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif,
     'Apple Color Emoji', 'Segoe UI Emoji';
   font-size: 14px;
@@ -24,7 +24,7 @@
 }
 
 /* ========== 头部统计 ========== */
-.cwd-comments-header {
+.cwd-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -33,7 +33,7 @@
   border-bottom: 1px solid var(--cwd-border);
 }
 
-.cwd-comments-count {
+.cwd-count {
   font-size: 16px;
   font-weight: 600;
   color: var(--cwd-text);
@@ -525,7 +525,7 @@
   min-height: 100px;
 }
 
-.cwd-comments {
+.cwd {
   display: flex;
   flex-direction: column;
 }
@@ -704,21 +704,21 @@
 }
 
 /* 滚动条样式 */
-.cwd-comments-container::-webkit-scrollbar {
+.cwd-container::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
-.cwd-comments-container::-webkit-scrollbar-track {
+.cwd-container::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.cwd-comments-container::-webkit-scrollbar-thumb {
+.cwd-container::-webkit-scrollbar-thumb {
   background: var(--cwd-border);
   border-radius: 4px;
 }
 
-.cwd-comments-container::-webkit-scrollbar-thumb:hover {
+.cwd-container::-webkit-scrollbar-thumb:hover {
   background: var(--cwd-text-secondary);
 }
 

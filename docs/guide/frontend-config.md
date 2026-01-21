@@ -8,7 +8,7 @@
 
 ```html
 <div id="comments"></div>
-<script src="https://cwd-comments.zishu.me/cwd-comments.js"></script>
+<script src="https://cwd.zishu.me/cwd.js"></script>
 <script>
 	const comments = new CWDComments({
 		el: '#comments',
@@ -58,7 +58,7 @@ comments.updateConfig({ theme: 'dark' });
 
 ```html
 <div id="comments"></div>
-<script src="https://cwd-comments.zishu.me/cwd-comments.js"></script>
+<script src="https://cwd.zishu.me/cwd.js"></script>
 <script>
 	const comments = new CWDComments({
 		el: '#comments',
@@ -72,7 +72,7 @@ comments.updateConfig({ theme: 'dark' });
 
 ```astro
 <div id="comments"></div>
-<script src="https://cwd-comments.zishu.me/cwd-comments.js" is:inline></script>
+<script src="https://cwd.zishu.me/cwd.js" is:inline></script>
 <script is:inline>
   document.addEventListener('DOMContentLoaded', () => {
     const comments = new window.CWDComments({

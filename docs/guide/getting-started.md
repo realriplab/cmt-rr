@@ -9,7 +9,7 @@ CWD 评论系统。
 
 是基于 Cloudflare Workers 与全球边缘网络的免服务器、极速安全、即插即用评论系统。
 
-[文档地址](https://cwd-comments-docs.zishu.me)
+[文档地址](https://cwd-docs.zishu.me)
 
 ![](https://github.com/user-attachments/assets/6ac091d8-e349-4d40-9d68-485817f63236)
 
@@ -30,19 +30,19 @@ CWD 评论系统。
 
 ```bash
 # 克隆项目
-git clone https://github.com/anghunk/cwd-comments
+git clone https://github.com/anghunk/cwd
 
 # API 项目
-cd cwd-comments-api
+cd cwd-api
 # 部署请查看文档
 
 # 前端项目
-cd cwd-comments-web
+cd cwd-admin
 npm install
 
 ```
 
 ## 配置
 
-- [后端配置](https://cwd-comments-docs.zishu.me/guide/backend-config.html)
-- [前端配置](https://cwd-comments-docs.zishu.me/guide/frontend-config.html)
+- [后端配置](https://cwd-docs.zishu.me/guide/backend-config.html)
+- [前端配置](https://cwd-docs.zishu.me/guide/frontend-config.html)

@@ -10,14 +10,14 @@ const commentsRoot = ref(null);
 onMounted(async () => {
   if (!commentsRoot.value || typeof window === "undefined") return;
 
-  const apiBaseUrl = "https://cwd-comments-api.anghunk.workers.dev";
+  const apiBaseUrl = "https://cwd-api.anghunk.workers.dev";
 
   if (!apiBaseUrl) return;
 
   if (!window.CWDComments) {
     await new Promise((resolve, reject) => {
       const script = document.createElement("script");
-      script.src = "https://cwd-comments.zishu.me/cwd-comments.js";
+      script.src = "https://cwd.zishu.me/cwd.js";
       script.async = true;
       script.onload = () => resolve();
       script.onerror = (e) => reject(e);

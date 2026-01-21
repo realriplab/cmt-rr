@@ -4,7 +4,7 @@
  * 使用方法：
  * ```html
  * <div id="comments"></div>
- * <script src="cwd-comments.js"></script>
+ * <script src="cwd.js"></script>
  * <script>
  *   new CWDComments({
  *     el: '#comments',
