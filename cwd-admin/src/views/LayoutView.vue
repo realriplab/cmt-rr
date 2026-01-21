@@ -246,7 +246,7 @@ function handleLogoutFromActions() {
 .menu-item {
   padding: 10px 16px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 15px;
   color: #24292f;
 }
 

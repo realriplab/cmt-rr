@@ -47,7 +47,12 @@
                 </div>
                 <span class="cell-time">{{ formatDate(item.created) }}</span>
                 <div v-if="item.ipAddress" class="cell-author-ip">
-                  <span class="cell-ip-text" @click="handleBlockIp(item)" title="屏蔽该 IP">{{ item.ipAddress }}</span>
+                  <span
+                    class="cell-ip-text"
+                    @click="handleBlockIp(item)"
+                    title="屏蔽该 IP"
+                    >{{ item.ipAddress }}</span
+                  >
                 </div>
               </div>
             </div>
@@ -419,7 +424,7 @@ onMounted(() => {
   border-bottom: none;
 }
 
-.table-row:hover .table-cell{
+.table-row:hover .table-cell {
   background-color: #f8f9fa;
 }
 
@@ -430,6 +435,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   box-sizing: border-box;
+  overflow: hidden;
   border-bottom: 1px solid #eaeae0;
 }
 
@@ -491,13 +497,13 @@ onMounted(() => {
 }
 
 .cell-author-name {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   margin-bottom: 2px;
 }
 
 .cell-author-email {
-  font-size: 11px;
+  font-size: 12px;
   color: #57606a;
   word-break: break-all;
   margin-bottom: 2px;
@@ -558,7 +564,7 @@ onMounted(() => {
 .cell-status {
   padding: 3px 8px;
   border-radius: 999px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 500;
 }
 

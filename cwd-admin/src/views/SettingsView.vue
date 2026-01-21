@@ -40,10 +40,10 @@
         </div>
         <h3 class="card-title">安全设置</h3>
         <div class="form-item">
-          <label class="form-label">管理员评论密钥</label>
-          <div class="form-hint" style="margin-bottom: 4px">
-            设置后前台使用管理员邮箱评论需输入此密钥。
-          </div>
+          <label class="form-label">
+            管理员评论密钥（设置后前台使用管理员邮箱评论需输入此密钥。）
+          </label>
+
           <input
             v-model="commentAdminKey"
             class="form-input"
@@ -52,9 +52,9 @@
           />
         </div>
         <div class="form-item">
-          <label class="form-label"
-            >允许调用的域名（多个域名用逗号分隔，留空则不限制。设置后仅匹配域名可调用前台评论组件。）</label
-          >
+          <label class="form-label">
+            允许调用的域名（多个域名用逗号分隔，留空则不限制。设置后仅匹配域名可调用前台评论组件。）
+          </label>
           <textarea
             v-model="allowedDomains"
             class="form-input"
@@ -63,9 +63,9 @@
           ></textarea>
         </div>
         <div class="form-item">
-          <label class="form-label"
-            >IP 黑名单（多个 IP 用逗号或换行分隔，留空则不限制）</label
-          >
+          <label class="form-label">
+            IP 黑名单（多个 IP 用逗号或换行分隔，留空则不限制）
+          </label>
           <textarea
             v-model="blockedIps"
             class="form-input"
