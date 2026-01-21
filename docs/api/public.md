@@ -4,7 +4,11 @@
 
 包含路径、方法、参数、请求体和响应示例。
 
-## GET /api/comments
+## 获取指定文章的评论列表
+
+```
+GET /api/comments
+```
 
 获取指定文章的评论列表。
 
@@ -91,7 +95,11 @@
   }
   ```
 
-## POST /api/comments
+## 提交新评论或回复
+
+```
+POST /api/comments
+```
 
 提交新评论或回复。
 
@@ -220,7 +228,11 @@
   }
   ```
 
-## GET /api/config/comments
+## 获取评论相关的公开配置
+
+```
+GET /api/config/comments
+```
 
 获取评论相关的公开配置，用于前端组件读取博主邮箱、徽标等信息。
 

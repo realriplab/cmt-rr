@@ -10,7 +10,11 @@ Authorization: Bearer <token>
 
 Token 通过登录接口获取，有效期为 24 小时。
 
-## POST /admin/login
+## 管理员登录
+
+```
+POST /admin/login
+```
 
 管理员登录，获取后续调用其他管理员接口所需的临时 Token。
 
@@ -89,7 +93,11 @@ Token 通过登录接口获取，有效期为 24 小时。
   }
   ```
 
-## GET /admin/comments/list
+## 获取评论列表
+
+```
+GET /admin/comments/list
+```
 
 获取评论列表，用于后台管理页面展示。
 
@@ -147,7 +155,11 @@ Token 通过登录接口获取，有效期为 24 小时。
   }
   ```
 
-## PUT /admin/comments/status
+## 更新评论状态
+
+```
+PUT /admin/comments/status
+```
 
 更新评论状态（例如通过 / 拒绝）。
 
@@ -197,7 +209,11 @@ Token 通过登录接口获取，有效期为 24 小时。
   }
   ```
 
-## DELETE /admin/comments/delete
+## 删除指定评论
+
+```
+DELETE /admin/comments/delete
+```
 
 删除指定评论。
 
@@ -241,7 +257,11 @@ Token 通过登录接口获取，有效期为 24 小时。
   }
   ```
 
-## GET /admin/comments/export
+## 导出所有评论数据
+
+```
+GET /admin/comments/export
+```
 
 导出所有评论数据，返回格式为 JSON，字段与数据库结构一致。
 
@@ -286,7 +306,11 @@ Token 通过登录接口获取，有效期为 24 小时。
   }
   ```
 
-## POST /admin/comments/import
+## 导入评论数据
+
+```
+POST /admin/comments/import
+```
 
 导入评论数据，支持 JSON 格式，可以是单个对象或数组。
 
@@ -350,7 +374,11 @@ Token 通过登录接口获取，有效期为 24 小时。
   }
   ```
 
-## GET /admin/settings/email
+## 获取当前通知邮箱配置
+
+```
+GET /admin/settings/email
+```
 
 获取当前通知邮箱配置。
 
@@ -378,7 +406,11 @@ Token 通过登录接口获取，有效期为 24 小时。
 }
 ```
 
-## PUT /admin/settings/email
+## 设置通知邮箱
+
+```
+PUT /admin/settings/email
+```
 
 设置通知邮箱，用于接收新评论提醒。
 
@@ -430,7 +462,11 @@ Token 通过登录接口获取，有效期为 24 小时。
   }
   ```
 
-## GET /admin/settings/comments
+## 获取评论配置
+
+```
+GET /admin/settings/comments
+```
 
 获取评论配置，例如博主邮箱、徽标、头像前缀、管理员密钥等。
 
@@ -478,7 +514,11 @@ Token 通过登录接口获取，有效期为 24 小时。
 }
 ```
 
-## PUT /admin/settings/comments
+## 更新评论配置
+
+```
+PUT /admin/settings/comments
+```
 
 更新评论配置。
 
