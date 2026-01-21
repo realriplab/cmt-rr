@@ -274,8 +274,13 @@ async function loadComments(page?: number) {
 }
 
 function updateRoutePage(page: number) {
-  const query = { ...route.query, p: String(page) };
-  router.replace({ query });
+  const query: Record<string, any> = { ...route.query };
+  if (page <= 1) {
+    delete query.p;
+  } else {
+    query.p = String(page);
+  }
+  router.push({ query });
 }
 
 async function goPage(page: number) {
@@ -365,7 +370,6 @@ onMounted(() => {
       initialPage = Math.floor(value);
     }
   }
-  updateRoutePage(initialPage);
   loadComments(initialPage);
 });
 </script>
