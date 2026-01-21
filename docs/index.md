@@ -2,7 +2,7 @@
 layout: home
 
 hero:
-  name: 'CWD 评论系统'
+  name: CWD 评论系统
   tagline: 基于 Cloudflare Workers 与全球边缘网络的免服务器、极速安全、即插即用评论系统。
   image:
     src: https://github.com/anghunk/cwd-comments/blob/main/icon.png?raw=true

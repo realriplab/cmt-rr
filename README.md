@@ -5,7 +5,7 @@
 
 <img src="https://github.com/anghunk/cwd-comments/blob/main/icon.png?raw=true" width="72" />
 
-# cwd-comments
+# CWD (Cloudflare Workers Discuss)
 
 基于 Cloudflare Workers 与全球边缘网络的免服务器、极速安全、即插即用评论系统。
 
