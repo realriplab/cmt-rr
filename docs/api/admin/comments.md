@@ -1,0 +1,411 @@
+# 评论管理相关
+
+评论管理接口用于查看、编辑、删除评论以及管理 IP 和邮箱黑名单。
+
+所有接口都需要在请求头中携带 Bearer Token。
+
+```http
+Authorization: Bearer <token>
+```
+
+## 1.1 获取评论列表
+
+```
+GET /admin/comments/list
+```
+
+获取评论列表，用于后台管理页面展示。
+
+- 方法：`GET`
+- 路径：`/admin/comments/list`
+- 鉴权：需要（Bearer Token）
+
+**`查询参数`**
+
+| 名称     | 位置  | 类型    | 必填 | 说明                                       |
+| -------- | ----- | ------- | ---- | ------------------------------------------ |
+| `page`   | query | integer | 否   | 页码，默认 `1`                             |
+| `domain` | query | string  | 否   | 按域名筛选评论，传入域名，如 `example.com` |
+
+说明：
+
+- 当前实现中每页固定大小为 `10`，暂不支持 `pageSize` 或状态过滤；
+- 当提供 `domain` 参数时，会匹配该域名下的评论，例如 `https://example.com/...`、`http://example.com/...`。
+
+**成功响应**
+
+- 状态码：`200`
+
+```json
+{
+	"data": [
+		{
+			"id": 1,
+			"created": 1736762400000,
+			"name": "张三",
+			"email": "zhangsan@example.com",
+			"postSlug": "https://your-blog.example.com/blog/hello-world",
+			"url": "https://zhangsan.me",
+			"ipAddress": "127.0.0.1",
+			"contentText": "很棒的文章！",
+			"contentHtml": "很棒的文章！",
+			"status": "approved",
+			"priority": 2,
+			"ua": "Mozilla/5.0 ...",
+			"avatar": "https://gravatar.com/avatar/..."
+		}
+	],
+	"pagination": {
+		"page": 1,
+		"limit": 10,
+		"total": 1
+	}
+}
+```
+
+**鉴权错误**
+
+- 未携带 Token 或 Token 失效：
+  - 状态码：`401`
+
+  ```json
+  {
+  	"message": "Unauthorized"
+  }
+  ```
+
+## 1.2 更新评论状态
+
+```
+PUT /admin/comments/status
+```
+
+更新评论状态（例如通过 / 拒绝）。
+
+**注意**：此接口仅用于更新评论状态，如需修改评论内容、置顶权重等，请使用 `/admin/comments/update` 接口。
+
+- 方法：`PUT`
+- 路径：`/admin/comments/status`
+- 鉴权：需要（Bearer Token）
+
+**查询参数**
+
+| 名称     | 位置  | 类型   | 必填 | 说明                                  |
+| -------- | ----- | ------ | ---- | ------------------------------------- |
+| `id`     | query | number | 是   | 评论 ID                               |
+| `status` | query | string | 是   | 评论状态，例如 `approved`、`rejected` |
+
+当前实现中未对 `status` 值进行枚举校验，但推荐仅使用：
+
+- `approved`：已通过
+- `rejected`：已拒绝
+
+**成功响应**
+
+- 状态码：`200`
+
+```json
+{
+	"message": "Comment status updated, id: 1, status: approved."
+}
+```
+
+**错误响应**
+
+- 缺少参数：
+  - 状态码：`400`
+
+  ```json
+  {
+  	"message": "Missing id or status"
+  }
+  ```
+
+- 更新失败：
+  - 状态码：`500`
+
+  ```json
+  {
+  	"message": "Update failed"
+  }
+  ```
+
+## 1.3 更新评论内容
+
+```
+PUT /admin/comments/update
+```
+
+更新评论的详细信息，包括昵称、邮箱、网址、评论地址、内容、状态和置顶权重等。
+
+- 方法：`PUT`
+- 路径：`/admin/comments/update`
+- 鉴权：需要（Bearer Token）
+
+**请求头**
+
+| 名称           | 必填 | 示例               |
+| -------------- | ---- | ------------------ |
+| `Content-Type` | 是   | `application/json` |
+
+**请求体**
+
+```json
+{
+  "id": 1,
+  "name": "张三",
+  "email": "zhangsan@example.com",
+  "url": "https://zhangsan.me",
+  "postSlug": "https://example.com/blog/hello-world",
+  "contentText": "更新后的评论内容",
+  "status": "approved",
+  "priority": 2
+}
+```
+
+字段说明：
+
+| 字段名      | 类型   | 必填 | 说明                                   |
+| ----------- | ------ | ---- | -------------------------------------- |
+| `id`        | number | 是   | 评论 ID                                |
+| `name`      | string | 是   | 评论者昵称                             |
+| `email`     | string | 是   | 评论者邮箱                             |
+| `url`       | string | 否   | 评论者个人主页或站点地址                 |
+| `postSlug`  | string | 否   | 评论地址（文章 URL），不传则保持原值   |
+| `contentText` | string | 是   | 评论内容（纯文本）                     |
+`| `status`    | string | 否   | 评论状态，可选 `approved`、`pending`、`rejected` |
+| `priority`  | number | 否   | 置顶权重，默认为 1，数值越大越靠前   |
+
+**置顶权重说明**：
+
+- `1`：不置顶（默认值）
+- `2` 或更高：数值越大，该评论在列表中排序越靠前
+- 公开 API 获取评论时，会按照 `priority DESC` 进行排序
+
+**成功响应**
+
+- 状态码：`200`
+
+```json
+{
+  "message": "Comment updated, id: 1."
+}
+```
+
+**错误响应**
+
+- ID 无效：
+  - 状态码：`400` 或 `404`
+
+  ```json
+  {
+    "message": "Missing or invalid id"
+  }
+  ```
+
+  或
+
+  ```json
+  {
+    "message": "Comment not found"
+  }
+  ```
+
+- 必填字段为空：
+  - 状态码：`400`
+
+  ```json
+  {
+    "message": "昵称不能为空"
+  }
+  ```
+
+- 更新失败：
+  - 状态码：`500`
+
+  ```json
+  {
+    "message": "Update failed"
+  }
+  ```
+
+## 1.4 删除指定评论
+
+```
+DELETE /admin/comments/delete
+```
+
+删除指定评论。
+
+- 方法：`DELETE`
+- 路径：`/admin/comments/delete`
+- 鉴权：需要（Bearer Token）
+
+**查询参数**
+
+| 名称 | 位置  | 类型   | 必填 | 说明    |
+| ---- | ----- | ------ | ---- | ------- |
+| `id` | query | number | 是   | 评论 ID |
+
+**成功响应**
+
+- 状态码：`200`
+
+```json
+{
+	"message": "Comment deleted, id: 1."
+}
+```
+
+**错误响应**
+
+- 缺少 ID：
+  - 状态码：`400`
+
+  ```json
+  {
+  	"message": "Missing id"
+  }
+  ```
+
+- 删除失败：
+  - 状态码：`500`
+
+  ```json
+  {
+  	"message": "Delete operation failed"
+  }
+  ```
+
+## 1.5 将指定 IP 加入评论黑名单
+
+```
+POST /admin/comments/block-ip
+```
+
+通过接口将指定 IP 地址加入评论黑名单，后续该 IP 提交评论将被拒绝。
+
+- 方法：`POST`
+- 路径：`/admin/comments/block-ip`
+- 鉴权：需要（Bearer Token）
+
+**请求头**
+
+| 名称           | 必填 | 示例               |
+| -------------- | ---- | ------------------ |
+| `Content-Type` | 是   | `application/json` |
+
+**请求体**
+
+```json
+{
+	"ip": "1.1.1.1"
+}
+```
+
+字段说明：
+
+| 字段名 | 类型   | 必填 | 说明                                             |
+| ------ | ------ | ---- | ------------------------------------------------ |
+| `ip`   | string | 是   | 要加入黑名单的 IP 地址，多个 IP 用逗号或换行分隔 |
+
+**成功响应**
+
+- 状态码：`200`
+
+```json
+{
+	"message": "已加入 IP 黑名单"
+}
+```
+
+**错误响应**
+
+- IP 为空：
+  - 状态码：`400`
+
+  ```json
+  {
+  	"message": "IP 地址不能为空"
+  }
+  ```
+
+- 内部错误：
+  - 状态码：`500`
+
+  ```json
+  {
+  	"message": "操作失败"
+  }
+  ```
+
+## 1.6 将指定邮箱加入评论黑名单
+
+```
+POST /admin/comments/block-email
+```
+
+通过接口将指定邮箱地址加入评论黑名单，后续该邮箱提交评论将被拒绝。
+
+- 方法：`POST`
+- 路径：`/admin/comments/block-email`
+- 鉴权：需要（Bearer Token）
+
+**请求头**
+
+| 名称           | 必填 | 示例               |
+| -------------- | ---- | ------------------ |
+| `Content-Type` | 是   | `application/json` |
+
+**请求体**
+
+```json
+{
+	"email": "spam@example.com"
+}
+```
+
+字段说明：
+
+| 字段名  | 类型   | 必填 | 说明                                             |
+| ------- | ------ | ---- | ------------------------------------------------ |
+| `email` | string | 是   | 要加入黑名单的邮箱地址，多个邮箱用逗号或换行分隔 |
+
+**成功响应**
+
+- 状态码：`200`
+
+```json
+{
+	"message": "已加入邮箱黑名单"
+}
+```
+
+**错误响应**
+
+- 邮箱为空：
+  - 状态码：`400`
+
+  ```json
+  {
+  	"message": "邮箱不能为空"
+  }
+  ```
+
+- 邮箱格式不正确：
+  - 状态码：`400`
+
+  ```json
+  {
+  	"message": "邮箱格式不正确"
+  }
+  ```
+
+- 内部错误：
+  - 状态码：`500`
+
+  ```json
+  {
+  	"message": "操作失败"
+  }
+  ```

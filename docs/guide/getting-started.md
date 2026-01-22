@@ -1,7 +1,7 @@
 > [!WARNING]  
 > ~~目前仍处于 Beta 测试阶段，欢迎反馈测试结果。~~
 > 
-> 目前处于内测阶段，欢迎参与测试。
+> 目前处于内测阶段，欢迎参与测试。基本功能已完成，后续会不断完善。
 
 # Cloudflare Workers Discuss
 
@@ -10,14 +10,6 @@
 是基于 Cloudflare Workers 与全球边缘网络的免服务器、极速安全、即插即用评论系统。
 
 数据存储在 Cloudflare D1 数据库中，通过 Worker 与数据库交互。
-
-**评论端**
-![](https://github.com/user-attachments/assets/6ac091d8-e349-4d40-9d68-485817f63236)
-
-**后台管理**
-![](https://github.com/user-attachments/assets/d2cd1d4d-f592-4ff5-9915-7ed0e2a0304b)
-![](https://github.com/user-attachments/assets/6c3586d8-a111-4c35-a099-91d670b9c04b)
-![](https://github.com/user-attachments/assets/97f35f06-a346-40ed-8ed4-24a9457bee33)
 
 ## 特性
 
@@ -29,6 +21,14 @@
 - 🔒 **禁止评论**：支持屏蔽 IP 和拉黑邮箱
 - 📧 **邮件通知**：集成各大邮箱厂商（逐步接入），支持自定义通知模板
 - 🔄 **评论迁移**：支持将其他评论系统的评论迁移到 CWD
+
+**评论端**
+![](https://github.com/user-attachments/assets/6ac091d8-e349-4d40-9d68-485817f63236)
+
+**后台管理**
+![](https://github.com/user-attachments/assets/d2cd1d4d-f592-4ff5-9915-7ed0e2a0304b)
+![](https://github.com/user-attachments/assets/6c3586d8-a111-4c35-a099-91d670b9c04b)
+![](https://github.com/user-attachments/assets/97f35f06-a346-40ed-8ed4-24a9457bee33)
 
 ## 前置要求
 

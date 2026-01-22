@@ -1,5 +1,5 @@
 import nav from './configs/nav';
-import sidebar from './configs/sidebar';
+import { rootSidebar, apiSidebar } from './configs/sidebar';
 import { defineConfig } from 'vitepress';
 
 export default defineConfig({
@@ -17,7 +17,10 @@ export default defineConfig({
 	],
 	themeConfig: {
 		nav,
-		sidebar,
+		sidebar: {
+			'/': rootSidebar,
+			'/api/': apiSidebar,
+		},
 		outline: {
 			level: [2, 3],
 			label: 'On this page',

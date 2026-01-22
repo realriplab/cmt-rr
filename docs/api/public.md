@@ -270,7 +270,7 @@ POST /api/comments
 
     ```json
     {
-      "message": "验证失败次数过多，请30分钟后再试"
+      "message": "验证失败次数过多，请 30 分钟后再试"
     }
     ```
 
@@ -281,7 +281,7 @@ POST /api/comments
 
   ```json
   {
-    "message": "评论频繁，等10s后再试"
+    "message": "评论频繁，等 10s 后再试"
   }
   ```
 
@@ -418,7 +418,7 @@ POST /api/verify-admin
 
   ```json
   {
-    "message": "验证失败次数过多，请30分钟后再试"
+    "message": "验证失败次数过多，请 30 分钟后再试"
   }
   ```
 
