@@ -94,6 +94,32 @@
       </div>
 
       <div class="card">
+        <h3 class="card-title">功能开关</h3>
+        <div class="form-item">
+          <label class="form-label">开启文章点赞功能</label>
+          <label class="switch">
+            <input v-model="enableArticleLike" type="checkbox" />
+            <span class="slider" />
+          </label>
+          <div class="form-hint">开启后，评论区顶部会显示文章点赞（喜欢）按钮。</div>
+        </div>
+        <div class="form-item">
+          <label class="form-label">开启评论点赞功能</label>
+          <label class="switch">
+            <input v-model="enableCommentLike" type="checkbox" />
+            <span class="slider" />
+          </label>
+          <div class="form-hint">开启后，评论列表中的每条评论都会显示点赞按钮。</div>
+        </div>
+        <div class="card-actions">
+          <button class="card-button" :disabled="savingFeature" @click="saveFeature">
+            <span v-if="savingFeature">保存中...</span>
+            <span v-else>保存</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
         <h3 class="card-title">通知邮箱设置</h3>
         <div class="form-item">
           <label class="form-label">开启邮件通知</label>
@@ -246,6 +272,8 @@ import {
   fetchEmailNotifySettings,
   saveEmailNotifySettings,
   sendTestEmail,
+  fetchFeatureSettings,
+  saveFeatureSettings,
 } from "../api/admin";
 
 const DEFAULT_REPLY_TEMPLATE = `<div style="background-color:#f4f4f5;padding:24px 0;">
@@ -335,12 +363,15 @@ const blockedEmails = ref("");
 const commentAdminKey = ref("");
 const adminKeySet = ref(false);
 const requireReview = ref(false);
+const enableArticleLike = ref(true);
+const enableCommentLike = ref(true);
 const savingEmail = ref(false);
 const testingEmail = ref(false);
 const savingComment = ref(false);
+const savingFeature = ref(false);
 const loading = ref(false);
 const message = ref("");
-const messageType = ref<"success" | "error">("success");
+const messageType messageType = ref<"success" | "error">("success");
 const toastMessage = ref("");
 const toastType = ref<"success" | "error">("success");
 const toastVisible = ref(false);
@@ -379,10 +410,11 @@ function resetTemplatesToDefault() {
 async function load() {
   loading.value = true;
   try {
-    const [notifyRes, commentRes, emailNotifyRes] = await Promise.all([
+    const [notifyRes, commentRes, emailNotifyRes, featureRes] = await Promise.all([
       fetchAdminEmail(),
       fetchCommentSettings(),
       fetchEmailNotifySettings(),
+      fetchFeatureSettings(),
     ]);
     email.value = notifyRes.email || "";
     commentAdminEmail.value = commentRes.adminEmail || "";
@@ -400,6 +432,8 @@ async function load() {
     adminKeySet.value = !!commentRes.adminKeySet;
     requireReview.value = !!commentRes.requireReview;
     emailGlobalEnabled.value = !!emailNotifyRes.globalEnabled;
+    enableArticleLike.value = featureRes.enableArticleLike;
+    enableCommentLike.value = featureRes.enableCommentLike;
 
     if (emailNotifyRes.templates) {
       templateAdmin.value = emailNotifyRes.templates.admin || DEFAULT_ADMIN_TEMPLATE;
@@ -516,33 +550,55 @@ async function saveComment() {
   savingComment.value = true;
   message.value = "";
   try {
-    const res = await saveCommentSettings({
-      adminEmail: commentAdminEmail.value,
-      adminBadge: commentAdminBadge.value,
-      avatarPrefix: avatarPrefix.value,
-      adminEnabled: commentAdminEnabled.value,
-      allowedDomains: allowedDomains.value
-        .split(/[,，\n]/)
-        .map((d) => d.trim())
-        .filter(Boolean),
-      adminKey: commentAdminKey.value || undefined,
-      requireReview: requireReview.value,
-      blockedIps: blockedIps.value
-        .split(/[,，\n]/)
-        .map((d) => d.trim())
-        .filter(Boolean),
-      blockedEmails: blockedEmails.value
-        .split(/[,，\n]/)
-        .map((d) => d.trim())
-        .filter(Boolean),
-    });
+    const [commentRes] = await Promise.all([
+      saveCommentSettings({
+        adminEmail: commentAdminEmail.value,
+        adminBadge: commentAdminBadge.value,
+        avatarPrefix: avatarPrefix.value,
+        adminEnabled: commentAdminEnabled.value,
+        allowedDomains: allowedDomains.value
+          .split(/[,，\n]/)
+          .map((d) => d.trim())
+          .filter(Boolean),
+        adminKey: commentAdminKey.value || undefined,
+        requireReview: requireReview.value,
+        blockedIps: blockedIps.value
+          .split(/[,，\n]/)
+          .map((d) => d.trim())
+          .filter(Boolean),
+        blockedEmails: blockedEmails.value
+          .split(/[,，\n]/)
+          .map((d) => d.trim())
+          .filter(Boolean),
+      }),
+    ]);
 
-    showToast(res.message || "保存成功", "success");
+    showToast(commentRes.message || "保存成功", "success");
   } catch (e: any) {
     message.value = e.message || "保存失败";
     messageType.value = "error";
   } finally {
     savingComment.value = false;
+  }
+}
+
+async function saveFeature() {
+  savingFeature.value = true;
+  message.value = "";
+  try {
+    const [featureRes] = await Promise.all([
+      saveFeatureSettings({
+        enableArticleLike: enableArticleLike.value,
+        enableCommentLike: enableCommentLike.value,
+      }),
+    ]);
+
+    showToast(featureRes.message || "保存成功", "success");
+  } catch (e: any) {
+    message.value = e.message || "保存失败";
+    messageType.value = "error";
+  } finally {
+    savingFeature.value = false;
   }
 }
 

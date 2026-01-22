@@ -37,6 +37,7 @@ export const apiSidebar = [
 					{ text: '邮件通知', link: '/api/admin/email-notify' },
 					{ text: '统计数据', link: '/api/admin/stats' },
 					{ text: '访问统计', link: '/api/admin/analytics' },
+					{ text: '点赞开关', link: '/api/admin/feature-settings' },
 				],
 			},
 		],

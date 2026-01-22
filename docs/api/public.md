@@ -45,6 +45,7 @@ GET /api/comments
       "postSlug": "/blog/hello-world",
       "avatar": "https://gravatar.com/avatar/...",
       "priority": 2,
+      "likes": 5,
       "replies": [
         {
           "id": 2,
@@ -58,7 +59,8 @@ GET /api/comments
           "avatar": "https://gravatar.com/avatar/...",
           "parentId": 1,
           "replyToAuthor": "张三",
-          "priority": 1
+          "priority": 1,
+          "likes": 2
         }
       ]
     }

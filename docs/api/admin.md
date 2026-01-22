@@ -55,3 +55,8 @@ Token 通过登录接口获取，有效期为 24 小时。
 
 - **获取点赞记录列表** `GET /admin/likes/list` - 获取各页面的点赞记录列表，支持按页面或用户筛选
 - **获取点赞统计** `GET /admin/likes/stats` - 获取点赞 Top 页面列表，用于后台展示点赞排行榜
+
+### [功能设置相关](./admin/feature-settings.md)
+
+- **获取功能设置** `GET /admin/settings/feature` - 获取功能开关设置（评论点赞、文章点赞）
+- **更新功能设置** `PUT /admin/settings/feature` - 更新功能开关设置
