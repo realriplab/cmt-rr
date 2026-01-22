@@ -250,10 +250,13 @@ export function fetchVisitOverview(domain?: string): Promise<VisitOverviewRespon
 	return get<VisitOverviewResponse>(url);
 }
 
-export function fetchVisitPages(domain?: string): Promise<VisitPagesResponse> {
+export function fetchVisitPages(domain?: string, order?: 'pv' | 'latest'): Promise<VisitPagesResponse> {
 	const searchParams = new URLSearchParams();
 	if (domain) {
 		searchParams.set('domain', domain);
+	}
+	if (order) {
+		searchParams.set('order', order);
 	}
 	const query = searchParams.toString();
 	const url = query ? `/admin/analytics/pages?${query}` : '/admin/analytics/pages';

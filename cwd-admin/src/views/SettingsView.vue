@@ -556,7 +556,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  max-width: 520px;
+  max-width: 620px;
 }
 
 .page-title {

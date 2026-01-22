@@ -49,8 +49,28 @@
     </div>
 
     <div class="card">
-      <h3 class="card-title">页面访问明细（按 PV 排序）</h3>
-      <div v-if="loading" class="page-hint">加载中...</div>
+      <div class="card-title-row">
+        <h3 class="card-title">页面访问明细</h3>
+        <div class="visit-tabs">
+          <button
+            class="visit-tab"
+            :class="{ 'visit-tab-active': visitTab === 'pv' }"
+            type="button"
+            @click="changeVisitTab('pv')"
+          >
+            按 PV 排序
+          </button>
+          <button
+            class="visit-tab"
+            :class="{ 'visit-tab-active': visitTab === 'latest' }"
+            type="button"
+            @click="changeVisitTab('latest')"
+          >
+            最新访问
+          </button>
+        </div>
+      </div>
+      <div v-if="listLoading" class="page-hint">加载中...</div>
       <div v-else-if="error" class="page-error">{{ error }}</div>
       <div v-else-if="items.length === 0" class="page-hint">暂无访问数据</div>
       <div v-else class="domain-table-wrapper">
@@ -102,6 +122,7 @@ import {
 const DOMAIN_STORAGE_KEY = "cwd_admin_domain_filter";
 
 const loading = ref(false);
+const listLoading = ref(false);
 const error = ref("");
 const overview = ref<VisitOverviewResponse>({
   totalPv: 0,
@@ -109,6 +130,7 @@ const overview = ref<VisitOverviewResponse>({
   last30Days: [],
 });
 const items = ref<VisitPageItem[]>([]);
+const visitTab = ref<"pv" | "latest">("pv");
 
 const storedDomain =
   typeof window !== "undefined"
@@ -183,14 +205,23 @@ function extractDomain(source: string | null | undefined): string | null {
   }
 }
 
+function getVisitOrderParam(): "pv" | "latest" | undefined {
+  if (visitTab.value === "latest") {
+    return "latest";
+  }
+  return undefined;
+}
+
 async function loadData() {
   loading.value = true;
+  listLoading.value = true;
   error.value = "";
   try {
     const domain = domainFilter.value || undefined;
+    const order = getVisitOrderParam();
     const [overviewRes, pagesRes] = await Promise.all([
       fetchVisitOverview(domain),
-      fetchVisitPages(domain),
+      fetchVisitPages(domain, order),
     ]);
     overview.value = {
       totalPv: overviewRes.totalPv,
@@ -223,6 +254,7 @@ async function loadData() {
     showToast(msg, "error");
   } finally {
     loading.value = false;
+    listLoading.value = false;
     await nextTick();
     if (!error.value && last30Days.value.length > 0) {
       renderChart();
@@ -230,6 +262,31 @@ async function loadData() {
       chartInstance.clear();
     }
   }
+}
+
+async function loadVisitPagesOnly() {
+  listLoading.value = true;
+  error.value = "";
+  try {
+    const domain = domainFilter.value || undefined;
+    const order = getVisitOrderParam();
+    const pagesRes = await fetchVisitPages(domain, order);
+    items.value = pagesRes.items || [];
+  } catch (e: any) {
+    const msg = e.message || "加载访问统计数据失败";
+    error.value = msg;
+    showToast(msg, "error");
+  } finally {
+    listLoading.value = false;
+  }
+}
+
+function changeVisitTab(tab: "pv" | "latest") {
+  if (visitTab.value === tab) {
+    return;
+  }
+  visitTab.value = tab;
+  loadVisitPagesOnly();
 }
 
 function renderChart() {
@@ -364,6 +421,14 @@ watch(
   font-size: 16px;
 }
 
+.card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
 .page-hint {
   font-size: 14px;
   color: #57606a;
@@ -476,10 +541,6 @@ watch(
   }
 }
 
-.chart-wrapper {
-  margin-top: 4px;
-}
-
 .chart {
   width: 100%;
   height: 260px;
@@ -506,6 +567,31 @@ watch(
 
 .toast-error {
   background-color: #d1242f;
+  color: #ffffff;
+}
+
+.visit-tabs {
+  display: inline-flex;
+  border-radius: 999px;
+  border: 1px solid #d0d7de;
+  overflow: hidden;
+}
+
+.visit-tab {
+  padding: 4px 10px;
+  font-size: 12px;
+  border: none;
+  background-color: #ffffff;
+  color: #57606a;
+  cursor: pointer;
+}
+
+.visit-tab + .visit-tab {
+  border-left: 1px solid #d0d7de;
+}
+
+.visit-tab-active {
+  background-color: #0969da;
   color: #ffffff;
 }
 </style>
