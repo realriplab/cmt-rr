@@ -43,6 +43,7 @@ export class CWDComments {
 		this.commentForm = null;
 		this.commentList = null;
 		this.formContainer = null;
+		this.customStyleElement = null;
 		this.store = null;
 		this.unsubscribe = null;
 		this.likeState = {
@@ -126,6 +127,7 @@ export class CWDComments {
 			if (this.config.theme) {
 				this.mountPoint.setAttribute('data-theme', this.config.theme);
 			}
+			this._applyCustomCss();
 		}
 
 		(async () => {
@@ -548,6 +550,37 @@ export class CWDComments {
 			});
 
 			this.store.loadComments();
+		}
+		this._applyCustomCss();
+	}
+
+	_applyCustomCss() {
+		if (!this.shadowRoot) {
+			return;
+		}
+		const rawUrl =
+			this.config && typeof this.config.customCssUrl === 'string'
+				? this.config.customCssUrl
+				: '';
+		const url = rawUrl.trim();
+		if (!url) {
+			if (this.customStyleElement && this.customStyleElement.parentNode) {
+				this.customStyleElement.parentNode.removeChild(this.customStyleElement);
+			}
+			this.customStyleElement = null;
+			return;
+		}
+		if (!this.customStyleElement) {
+			const link = document.createElement('link');
+			link.rel = 'stylesheet';
+			link.href = url;
+			this.shadowRoot.appendChild(link);
+			this.customStyleElement = link;
+			return;
+		}
+		this.customStyleElement.href = url;
+		if (this.customStyleElement.parentNode !== this.shadowRoot) {
+			this.shadowRoot.appendChild(this.customStyleElement);
 		}
 	}
 
