@@ -10,7 +10,7 @@ const commentsRoot = ref(null);
 onMounted(async () => {
   if (!commentsRoot.value || typeof window === "undefined") return;
 
-  const apiBaseUrl = "https://cwd-api.anghunk.workers.dev";
+  const apiBaseUrl = "https://cwd-api.zishu.me";
 
   if (!apiBaseUrl) return;
 

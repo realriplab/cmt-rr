@@ -2,16 +2,6 @@
   <div class="page">
     <div style="display: flex; align-items: center; gap: 20px">
       <h2 class="page-title">访问统计</h2>
-      <div class="toolbar">
-        <div class="toolbar-left">
-          <select v-model="domainFilter" class="toolbar-select">
-            <option value="">全部域名</option>
-            <option v-for="item in domainOptions" :key="item" :value="item">
-              {{ item }}
-            </option>
-          </select>
-        </div>
-      </div>
     </div>
     <div
       v-if="toastVisible"
@@ -122,17 +112,15 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, nextTick, watch } from "vue";
+import { onMounted, onBeforeUnmount, ref, nextTick, watch, inject } from "vue";
+import type { Ref } from "vue";
 import * as echarts from "echarts";
 import {
   fetchVisitOverview,
   fetchVisitPages,
-  fetchDomainList,
   type VisitOverviewResponse,
   type VisitPageItem,
 } from "../api/admin";
-
-const DOMAIN_STORAGE_KEY = "cwd_admin_domain_filter";
 
 const loading = ref(false);
 const listLoading = ref(false);
@@ -148,12 +136,8 @@ const overview = ref<VisitOverviewResponse>({
 const items = ref<VisitPageItem[]>([]);
 const visitTab = ref<"pv" | "latest">("pv");
 
-const storedDomain =
-  typeof window !== "undefined"
-    ? window.localStorage.getItem(DOMAIN_STORAGE_KEY) || ""
-    : "";
-const domainFilter = ref(storedDomain);
-const domainOptions = ref<string[]>([]);
+const injectedDomainFilter = inject<Ref<string> | null>("domainFilter", null);
+const domainFilter = injectedDomainFilter ?? ref("");
 const last30Days = ref<{ date: string; total: number }[]>([]);
 
 const toastMessage = ref("");
@@ -267,21 +251,6 @@ async function loadData() {
   }
 }
 
-async function loadDomains() {
-  try {
-    const res = await fetchDomainList();
-    const domains = Array.isArray(res.domains) ? res.domains : [];
-    const set = new Set(domains);
-    if (domainFilter.value && !set.has(domainFilter.value)) {
-      set.add(domainFilter.value);
-    }
-    domainOptions.value = Array.from(set);
-  } catch (e: any) {
-    const msg = e.message || "加载域名列表失败";
-    showToast(msg, "error");
-  }
-}
-
 async function loadVisitPagesOnly() {
   listLoading.value = true;
   error.value = "";
@@ -370,7 +339,6 @@ function handleResize() {
 
 onMounted(() => {
   loadData();
-  loadDomains();
   window.addEventListener("resize", handleResize);
 });
 
@@ -382,15 +350,9 @@ onBeforeUnmount(() => {
   }
 });
 
-watch(
-  domainFilter,
-  (value) => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(DOMAIN_STORAGE_KEY, value || "");
-    }
-    loadData();
-  }
-);
+watch(domainFilter, () => {
+  loadData();
+});
 </script>
 
 <style scoped>

@@ -210,7 +210,7 @@ app.use('/admin/*', async (c, next) => {
 
 app.get('/', (c) => {
 	return c.html(
-		`CWD 评论部署成功，当前版本 ${VERSION}，<a href="https://github.com/anghunk/cwd" target="_blank" rel="noreferrer">查看文档</a>`
+		`CWD 评论部署成功，当前版本 ${VERSION}，<a href="https://cdw.js.org" target="_blank" rel="noreferrer">查看文档</a>`
 	);
 });
 

@@ -2,16 +2,6 @@
   <div class="page">
     <div style="display: flex; align-items: center; gap: 20px">
       <h2 class="page-title">数据看板</h2>
-      <div class="toolbar">
-        <div class="toolbar-left">
-          <select v-model="domainFilter" class="toolbar-select">
-            <option value="">全部域名</option>
-            <option v-for="item in domainOptions" :key="item" :value="item">
-              {{ item }}
-            </option>
-          </select>
-        </div>
-      </div>
     </div>
     <div
       v-if="toastVisible"
@@ -92,9 +82,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, nextTick, watch } from "vue";
+import { onMounted, onBeforeUnmount, ref, nextTick, watch, inject } from "vue";
+import type { Ref } from "vue";
 import * as echarts from "echarts";
-import { fetchCommentStats, fetchDomainList } from "../api/admin";
+import { fetchCommentStats } from "../api/admin";
 
 type DomainStat = {
   domain: string;
@@ -103,8 +94,6 @@ type DomainStat = {
   pending: number;
   rejected: number;
 };
-
-const DOMAIN_STORAGE_KEY = "cwd_admin_domain_filter";
 
 const statsLoading = ref(false);
 const statsError = ref("");
@@ -117,12 +106,8 @@ const statsSummary = ref({
 const domainStats = ref<DomainStat[]>([]);
 const last7Days = ref<{ date: string; total: number }[]>([]);
 
-const storedDomain =
-  typeof window !== "undefined"
-    ? window.localStorage.getItem(DOMAIN_STORAGE_KEY) || ""
-    : "";
-const domainFilter = ref(storedDomain);
-const domainOptions = ref<string[]>([]);
+const injectedDomainFilter = inject<Ref<string> | null>("domainFilter", null);
+const domainFilter = injectedDomainFilter ?? ref("");
 
 const toastMessage = ref("");
 const toastType = ref<"success" | "error">("success");
@@ -163,21 +148,6 @@ async function loadStats() {
     if (!statsError.value) {
       renderChart();
     }
-  }
-}
-
-async function loadDomains() {
-  try {
-    const res = await fetchDomainList();
-    const domains = Array.isArray(res.domains) ? res.domains : [];
-    const set = new Set(domains);
-    if (domainFilter.value && !set.has(domainFilter.value)) {
-      set.add(domainFilter.value);
-    }
-    domainOptions.value = Array.from(set);
-  } catch (e: any) {
-    const msg = e.message || "加载域名列表失败";
-    showToast(msg, "error");
   }
 }
 
@@ -244,14 +214,10 @@ function handleResize() {
 
 onMounted(() => {
   loadStats();
-  loadDomains();
   window.addEventListener("resize", handleResize);
 });
 
-watch(domainFilter, (value) => {
-  if (typeof window !== "undefined") {
-    window.localStorage.setItem(DOMAIN_STORAGE_KEY, value || "");
-  }
+watch(domainFilter, () => {
   loadStats();
 });
 

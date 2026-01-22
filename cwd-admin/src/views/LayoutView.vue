@@ -16,6 +16,14 @@
       </button>
       <div class="layout-title">CWD 评论后台</div>
       <div class="layout-actions-wrapper">
+        <div class="layout-domain-filter">
+          <select v-model="domainFilter" class="layout-domain-select">
+            <option value="">全部域名</option>
+            <option v-for="item in domainOptions" :key="item" :value="item">
+              {{ item }}
+            </option>
+          </select>
+        </div>
         <div class="layout-actions">
           <a class="layout-button" href="https://cwd.js.org" target="_blank">
             使用文档
@@ -107,15 +115,50 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted, watch, provide } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { logoutAdmin } from "../api/admin";
+import { logoutAdmin, fetchDomainList } from "../api/admin";
+
+const DOMAIN_STORAGE_KEY = "cwd_admin_domain_filter";
 
 const router = useRouter();
 const route = useRoute();
 
 const isMobileSiderOpen = ref(false);
 const isActionsOpen = ref(false);
+
+const storedDomain =
+  typeof window !== "undefined"
+    ? window.localStorage.getItem(DOMAIN_STORAGE_KEY) || ""
+    : "";
+const domainFilter = ref(storedDomain);
+const domainOptions = ref<string[]>([]);
+
+async function loadDomains() {
+  try {
+    const res = await fetchDomainList();
+    const domains = Array.isArray(res.domains) ? res.domains : [];
+    const set = new Set(domains);
+    if (domainFilter.value && !set.has(domainFilter.value)) {
+      set.add(domainFilter.value);
+    }
+    domainOptions.value = Array.from(set);
+  } catch {
+    domainOptions.value = [];
+  }
+}
+
+provide("domainFilter", domainFilter);
+
+onMounted(() => {
+  loadDomains();
+});
+
+watch(domainFilter, (value) => {
+  if (typeof window !== "undefined") {
+    window.localStorage.setItem(DOMAIN_STORAGE_KEY, value || "");
+  }
+});
 
 function isRouteActive(name: string) {
   return route.name === name;
@@ -209,8 +252,22 @@ function handleLogoutFromActions() {
 .layout-actions-wrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
   position: relative;
+}
+
+.layout-domain-filter {
+  display: flex;
+  align-items: center;
+}
+
+.layout-domain-select {
+  padding: 6px 8px;
+  border-radius: 4px;
+  border: 1px solid #57606a;
+  background-color: #24292f;
+  color: #ffffff;
+  font-size: 13px;
 }
 
 .layout-actions {

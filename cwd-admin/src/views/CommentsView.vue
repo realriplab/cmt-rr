@@ -9,12 +9,6 @@
           <option value="pending">待审核</option>
           <option value="rejected">已拒绝</option>
         </select>
-        <select v-model="domainFilter" class="toolbar-select">
-          <option value="">全部域名</option>
-          <option v-for="item in domainOptions" :key="item" :value="item">
-            {{ item }}
-          </option>
-        </select>
       </div>
       <div class="toolbar-right">
         <button class="toolbar-button" @click="goPage(1)">刷新</button>
@@ -82,7 +76,7 @@
               </span>
               <span
                 v-if="item.priority && item.priority > 1"
-                :title="item.priority"
+                :title="String(item.priority)"
                 class="cell-status cell-pin-flag"
               >
                 置顶
@@ -251,7 +245,8 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, computed, watch } from "vue";
+import { onMounted, ref, computed, watch, inject } from "vue";
+import type { Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import {
   CommentItem,
@@ -265,8 +260,6 @@ import {
   fetchDomainList,
 } from "../api/admin";
 
-const DOMAIN_STORAGE_KEY = "cwd_admin_domain_filter";
-
 const route = useRoute();
 const router = useRouter();
 
@@ -275,11 +268,8 @@ const pagination = ref<{ page: number; total: number }>({ page: 1, total: 1 });
 const loading = ref(false);
 const error = ref("");
 const statusFilter = ref("");
-const storedDomain =
-  typeof window !== "undefined"
-    ? window.localStorage.getItem(DOMAIN_STORAGE_KEY) || ""
-    : "";
-const domainFilter = ref(storedDomain);
+const injectedDomainFilter = inject<Ref<string> | null>("domainFilter", null);
+const domainFilter = injectedDomainFilter ?? ref("");
 const jumpPageInput = ref("");
 const editVisible = ref(false);
 const editSaving = ref(false);
@@ -293,8 +283,6 @@ const editForm = ref<{
   status: string;
   priority: number;
 } | null>(null);
-
-const domainOptions = ref<string[]>([]);
 
 const filteredComments = computed(() => {
   if (!statusFilter.value) {
@@ -558,26 +546,13 @@ onMounted(() => {
     domainFilter.value = d.trim();
   }
 
-  fetchDomainList()
-    .then((res) => {
-      const domains = Array.isArray(res.domains) ? res.domains : [];
-      domainOptions.value = Array.from(new Set(domains));
-    })
-    .catch(() => {
-      domainOptions.value = [];
-    });
-
   loadComments(initialPage);
 });
 
-watch(
-  domainFilter,
-  (value) => {
-    if (typeof window !== "undefined") {
-      window.localStorage.setItem(DOMAIN_STORAGE_KEY, value || "");
-    }
-  }
-);
+watch(domainFilter, () => {
+  updateRoutePage(1);
+  loadComments(1);
+});
 </script>
 
 <style scoped>
