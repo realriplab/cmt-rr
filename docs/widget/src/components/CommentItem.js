@@ -231,7 +231,9 @@ export class CommentItem extends Component {
             submitting: this.props.submitting,
             adminEmail: this.props.adminEmail,
             adminBadge: this.props.adminBadge,
+            enableCommentLike: this.props.enableCommentLike,
             onReply: this.props.onReply,
+            onLikeComment: this.props.onLikeComment,
             onSubmitReply: this.props.onSubmitReply,
             onCancelReply: this.props.onCancelReply,
             onUpdateReplyContent: this.props.onUpdateReplyContent,
@@ -304,7 +306,9 @@ export class CommentItem extends Component {
           replyingTo: this.props.replyingTo,
           replyContent: this.props.replyContent,
           replyError: this.props.replyError,
-          submitting: this.props.submitting
+          submitting: this.props.submitting,
+          enableCommentLike: this.props.enableCommentLike,
+          onLikeComment: this.props.onLikeComment
         });
       });
     }
