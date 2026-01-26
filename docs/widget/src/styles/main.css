@@ -372,9 +372,10 @@
   background: #fff8c5;
   color: #9a6700;
   border-radius: 3px;
-  padding: 1px 4px;
+  padding: 0 6px;
   font-size: 12px;
   margin: 0 4px;
+  border: 1px solid #9a6700;
 }
 
 .cwd-reply-to-separator {

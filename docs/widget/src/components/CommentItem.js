@@ -200,7 +200,7 @@ export class CommentItem extends Component {
     // 设置评论内容的 TEXT
     const contentEl = root.querySelector('.cwd-comment-content');
     if (contentEl) {
-      contentEl.innerHTML = comment.contentText;
+      contentEl.innerHTML = comment.contentHtml;
     }
 
     // 创建回复编辑器
