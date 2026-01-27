@@ -126,9 +126,8 @@ export class CWDComments {
 			this.mountPoint = document.createElement('div');
 			this.mountPoint.className = 'cwd-comments-container';
 			this.shadowRoot.appendChild(this.mountPoint);
-			if (this.config.theme) {
-				this.mountPoint.setAttribute('data-theme', this.config.theme);
-			}
+			const theme = this.config.theme || 'light';
+			this.mountPoint.setAttribute('data-theme', theme);
 			this._applyCustomCss();
 		}
 

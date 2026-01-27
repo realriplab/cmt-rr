@@ -3,7 +3,7 @@
  * 支持主题切换
  */
 
-:root,
+.cwd-comments-container,
 [data-theme="light"] {
   /* 主色调 */
   --cwd-primary: #0969da;

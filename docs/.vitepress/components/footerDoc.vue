@@ -3,9 +3,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
+import { useData } from "vitepress";
 
 const commentsRoot = ref(null);
+const commentsInstance = ref(null);
+const { isDark } = useData();
+
+const getTheme = () => (isDark.value ? "dark" : "light");
 
 onMounted(async () => {
   if (!commentsRoot.value || typeof window === "undefined") return;
@@ -30,8 +35,22 @@ onMounted(async () => {
   const comments = new window.CWDComments({
     el: commentsRoot.value,
     apiBaseUrl,
+    theme: getTheme(),
   });
 
+  commentsInstance.value = comments;
+
   comments.mount();
+
+  watch(
+    isDark,
+    (value) => {
+      if (!commentsInstance.value) return;
+      commentsInstance.value.updateConfig({
+        theme: value ? "dark" : "light",
+      });
+    },
+    { immediate: false }
+  );
 });
 </script>
