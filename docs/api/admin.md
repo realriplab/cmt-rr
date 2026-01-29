@@ -8,7 +8,7 @@
 Authorization: Bearer <token>
 ```
 
-Token 通过登录接口获取，有效期为 24 小时。
+Token 通过登录接口获取，有效期为 48 小时。
 
 ## 接口分类
 

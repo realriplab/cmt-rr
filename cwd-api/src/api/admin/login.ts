@@ -46,14 +46,14 @@ export const adminLogin = async (c: Context<{ Bindings: Bindings }>) => {
 	// 生成 Token (你的 tempKey)
 	const tempKey = crypto.randomUUID();
 
-	// 将 Token 存入 KV，有效期 24 小时（86400秒）
+	// 将 Token 存入 KV，有效期 48 小时（172800秒）
 	await c.env.CWD_AUTH_KV.put(
 		`token:${tempKey}`,
 		JSON.stringify({
 			user: data.name,
 			ip: ip,
 		}),
-		{ expirationTtl: 86400 }
+		{ expirationTtl: 172800 }
 	);
 
 	return c.json({
