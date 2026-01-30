@@ -408,10 +408,12 @@
 }
 
 .cwd-reply-to-separator {
+  font-size: 14px;
   margin: 0 4px;
 }
 
 .cwd-reply-to-author {
+  font-size: 14px;
   font-style: italic;
   color: var(--cwd-text-secondary, #6e7781);
 }
