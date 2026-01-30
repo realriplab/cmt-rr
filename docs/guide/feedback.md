@@ -4,6 +4,6 @@
 
 - 涉及到文档的问题，请直接在对应页面下进行评论留言！
 - [Github Isseus](https://github.com/anghunk/cwd/issues)
-- [Discord](https://discord.gg/VahC3r7t)
+- [Discord](https://discord.gg/n2pErsD7Kg)
 
 我们会尽快回复您的反馈。感谢您的参与！
