@@ -2,7 +2,7 @@
   <div class="login-page">
     <div class="login-container">
       <div class="login-card">
-        <img class="login-icon" src="https://cwd.js.org/icon.png" alt="icon" />
+        <div class="login-icon"></div>
         <div class="login-subtitle">
           <h1 class="login-title">CWD</h1>
           - 简洁的自托管评论系统管理面板
