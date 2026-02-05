@@ -79,26 +79,31 @@
       <div v-if="statsLoading" class="page-hint">加载中...</div>
       <div v-else-if="statsError" class="page-error">{{ statsError }}</div>
       <div v-else-if="domainStats.length === 0" class="page-hint">暂无评论数据</div>
-      <div v-else class="domain-table-wrapper">
-        <div class="domain-table">
-          <div class="domain-table-header">
-            <div class="domain-cell domain-cell-domain">域名</div>
-            <div class="domain-cell">总数</div>
-            <div class="domain-cell">已通过</div>
-            <div class="domain-cell">待审核</div>
-            <div class="domain-cell">已拒绝</div>
+      <div v-else class="domain-stats-layout">
+        <div class="domain-table-wrapper">
+          <div class="domain-table">
+            <div class="domain-table-header">
+              <div class="domain-cell domain-cell-domain">域名</div>
+              <div class="domain-cell">总数</div>
+              <div class="domain-cell">已通过</div>
+              <div class="domain-cell">待审核</div>
+              <div class="domain-cell">已拒绝</div>
+            </div>
+            <div
+              v-for="item in domainStats"
+              :key="item.domain"
+              class="domain-table-row"
+            >
+              <div class="domain-cell domain-cell-domain">{{ item.domain }}</div>
+              <div class="domain-cell">{{ item.total }}</div>
+              <div class="domain-cell">{{ item.approved }}</div>
+              <div class="domain-cell">{{ item.pending }}</div>
+              <div class="domain-cell">{{ item.rejected }}</div>
+            </div>
           </div>
-          <div
-            v-for="item in domainStats"
-            :key="item.domain"
-            class="domain-table-row"
-          >
-            <div class="domain-cell domain-cell-domain">{{ item.domain }}</div>
-            <div class="domain-cell">{{ item.total }}</div>
-            <div class="domain-cell">{{ item.approved }}</div>
-            <div class="domain-cell">{{ item.pending }}</div>
-            <div class="domain-cell">{{ item.rejected }}</div>
-          </div>
+        </div>
+        <div class="domain-pie-wrapper">
+          <div ref="domainPieEl" class="domain-pie-chart"></div>
         </div>
       </div>
     </div>
@@ -140,7 +145,9 @@ const toastType = ref<"success" | "error">("success");
 const toastVisible = ref(false);
 
 const chartEl = ref<HTMLDivElement | null>(null);
+const domainPieEl = ref<HTMLDivElement | null>(null);
 let chartInstance: echarts.ECharts | null = null;
+let domainPieChartInstance: echarts.ECharts | null = null;
 
 function loadChartRangeFromStorage() {
   if (typeof window === "undefined") {
@@ -196,6 +203,7 @@ async function loadStats() {
     await nextTick();
     if (!statsError.value) {
       renderChart();
+      renderDomainPieChart();
     }
   }
 }
@@ -258,6 +266,45 @@ function renderChart() {
   chartInstance.setOption(option);
 }
 
+function renderDomainPieChart() {
+  const el = domainPieEl.value;
+  if (!el) {
+    return;
+  }
+  if (!domainPieChartInstance) {
+    domainPieChartInstance = echarts.init(el);
+  }
+  if (!domainStats.value.length) {
+    domainPieChartInstance.clear();
+    return;
+  }
+  const source = domainStats.value.slice().sort((a, b) => b.total - a.total);
+  const data = source.map((item) => ({
+    name: item.domain || "未知",
+    value: item.total,
+  }));
+  const option: echarts.EChartsOption = {
+    tooltip: {
+      trigger: "item",
+      formatter: "{b}: {c} ({d}%)",
+    },
+    legend: {
+      orient: "vertical",
+      left: "left",
+    },
+    series: [
+      {
+        type: "pie",
+        radius: ["40%", "70%"],
+        center: ["60%", "50%"],
+        avoidLabelOverlap: false,
+        data,
+      },
+    ],
+  };
+  domainPieChartInstance.setOption(option);
+}
+
 function changeChartRange(range: "7" | "30") {
   if (chartRange.value === range) {
     return;
@@ -265,11 +312,15 @@ function changeChartRange(range: "7" | "30") {
   chartRange.value = range;
   saveChartRangeToStorage(range);
   renderChart();
+  renderDomainPieChart();
 }
 
 function handleResize() {
   if (chartInstance) {
     chartInstance.resize();
+  }
+  if (domainPieChartInstance) {
+    domainPieChartInstance.resize();
   }
 }
 
@@ -288,6 +339,10 @@ onBeforeUnmount(() => {
   if (chartInstance) {
     chartInstance.dispose();
     chartInstance = null;
+  }
+  if (domainPieChartInstance) {
+    domainPieChartInstance.dispose();
+    domainPieChartInstance = null;
   }
 });
 </script>

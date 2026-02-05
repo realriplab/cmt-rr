@@ -88,10 +88,16 @@
   color: var(--color-danger);
 }
 
+.domain-stats-layout {
+  display: flex;
+  align-items: stretch;
+  gap: 16px;
+}
+
 .domain-table-wrapper {
-  width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  flex: 1;
 }
 
 .domain-table {
@@ -125,6 +131,19 @@
   font-weight: 500;
 }
 
+.domain-pie-wrapper {
+  width: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.domain-pie-chart {
+  width: 100%;
+  max-width: 400px;
+  height: 260px;
+}
+
 .chart-wrapper {
   margin-top: 4px;
 }
@@ -137,5 +156,13 @@
 @media (max-width: 768px) {
   .stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .domain-stats-layout {
+    flex-direction: column;
+  }
+
+  .domain-pie-wrapper {
+    width: 100%;
   }
 }

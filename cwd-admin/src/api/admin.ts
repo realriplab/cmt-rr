@@ -21,6 +21,7 @@ export type CommentItem = {
 	priority?: number;
 	likes?: number;
 	ua?: string | null;
+	isAdmin?: boolean;
 };
 
 export type CommentListResponse = {
