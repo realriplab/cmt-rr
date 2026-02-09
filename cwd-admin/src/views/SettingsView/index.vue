@@ -38,14 +38,6 @@
         <button
           type="button"
           class="settings-tab"
-          :class="{ 'settings-tab-active': activeTab === 'site' }"
-          @click="activeTab = 'site'"
-        >
-          站点管理
-        </button>
-        <button
-          type="button"
-          class="settings-tab"
           :class="{ 'settings-tab-active': activeTab === 'emailNotify' }"
           @click="activeTab = 'emailNotify'"
         >
@@ -235,16 +227,6 @@
                     <span v-else>保存</span>
                   </button>
                 </div>
-              </div>
-            </div>
-          </template>
-          <template v-else-if="activeTab === 'site'">
-            <div class="card">
-              <div class="card-header">
-                <div class="card-title">站点列表管理</div>
-              </div>
-              <div class="card-body">
-                <SiteManager />
               </div>
             </div>
           </template>
@@ -487,17 +469,15 @@ import {
   fetchEmailNotifySettings,
   saveEmailNotifySettings,
   sendTestEmail,
-        fetchFeatureSettings,
-        saveFeatureSettings,
-        fetchAdminDisplaySettings,
-        saveAdminDisplaySettings,
+  fetchFeatureSettings,
+  saveFeatureSettings,
+  fetchAdminDisplaySettings,
+  saveAdminDisplaySettings,
   fetchTelegramSettings,
   saveTelegramSettings,
   setupTelegramWebhook,
   sendTelegramTestMessage,
 } from "../../api/admin";
-
-import SiteManager from "./components/SiteManager.vue";
 import TagInput from "../../components/TagInput.vue";
 
 const DEFAULT_REPLY_TEMPLATE = `<div style="background-color:#f4f4f5;padding:24px 0;">
@@ -606,15 +586,13 @@ type TabKey =
   | "feature"
   | "display"
   | "emailNotify"
-  | "telegramNotify"
-  | "site";
+  | "telegramNotify";
 const validTabs: TabKey[] = [
   "comment",
   "feature",
   "display",
   "emailNotify",
   "telegramNotify",
-  "site",
 ];
 
 const activeTab = ref<TabKey>(

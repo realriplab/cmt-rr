@@ -13,9 +13,13 @@
       <div class="layout-actions-wrapper">
         <div class="layout-domain-filter layout-domain-filter-header">
           <select v-model="currentSiteId" class="layout-domain-select">
-            <option value="default">所有站点</option>
-            <option v-for="item in siteOptions" :key="item.value" :value="item.value">
-              {{ item.label }}
+            <option :value="defaultSiteId">{{ getSiteLabel(defaultSiteId) }}</option>
+            <option
+              v-for="item in siteOptions"
+              :key="item.value"
+              :value="item.value"
+            >
+              {{ getSiteLabel(item.value) }}
             </option>
           </select>
         </div>
@@ -71,9 +75,13 @@
       >
         <div class="layout-sider-domain-filter">
           <select v-model="currentSiteId" class="layout-domain-select">
-            <option value="default">所有站点</option>
-            <option v-for="item in siteOptions" :key="item.value" :value="item.value">
-              {{ item.label }}
+            <option :value="defaultSiteId">{{ getSiteLabel(defaultSiteId) }}</option>
+            <option
+              v-for="item in siteOptions"
+              :key="item.value"
+              :value="item.value"
+            >
+              {{ getSiteLabel(item.value) }}
             </option>
           </select>
         </div>
@@ -173,7 +181,7 @@
 <script setup lang="ts">
 import { ref, onMounted, provide, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { logoutAdmin, fetchSiteList, fetchAdminDisplaySettings } from "../../api/admin";
+import { logoutAdmin, fetchAdminDisplaySettings, fetchSiteList } from "../../api/admin";
 import { useTheme } from "../../composables/useTheme";
 import { useSite } from "../../composables/useSite";
 import packageJson from "../../../package.json";
@@ -209,15 +217,23 @@ function cycleTheme() {
 
 type SiteOption = { label: string; value: string };
 const siteOptions = ref<SiteOption[]>([]);
+const defaultSiteId = "";
+
+function getSiteLabel(value: string) {
+  if (!value) {
+    return "默认站点 (Default)";
+  }
+  return value;
+}
 
 async function loadSites() {
   try {
     const res = await fetchSiteList();
     const sites = Array.isArray(res.sites) ? res.sites : [];
-    
-    siteOptions.value = sites.map(s => ({
-        label: s === '' ? '默认站点 (Default)' : s,
-        value: s
+    const unique = Array.from(new Set(sites));
+    siteOptions.value = unique.filter((s) => s !== "").map((s) => ({
+      label: s,
+      value: s,
     }));
   } catch {
     siteOptions.value = [];

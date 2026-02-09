@@ -29,7 +29,7 @@
             @dragstart="onDragStart($event, domain, 'visible')"
             @dblclick="moveToHidden(domain)"
           >
-            <span class="domain-text">{{ domain }}</span>
+            <span class="domain-text">{{ getSiteLabel(domain) }}</span>
             <button class="move-btn" @click="moveToHidden(domain)" title="移出">
               <PhArrowRight :size="16" />
             </button>
@@ -74,7 +74,7 @@
             <button class="move-btn" @click="moveToVisible(domain)" title="移入">
               <PhArrowLeft :size="16" />
             </button>
-            <span class="domain-text">{{ domain }}</span>
+            <span class="domain-text">{{ getSiteLabel(domain) }}</span>
           </div>
         </div>
       </div>
@@ -90,7 +90,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
-import { fetchDomainList, fetchFeatureSettings, saveFeatureSettings } from '../../../api/admin';
+import { fetchSiteList, fetchFeatureSettings, saveFeatureSettings } from '../../../api/admin';
 
 const loading = ref(false);
 const allDomains = ref<string[]>([]);
@@ -101,14 +101,21 @@ const hiddenList = computed(() => {
   return allDomains.value.filter(d => !visibleSet.has(d));
 });
 
+function getSiteLabel(value: string) {
+  if (!value) {
+    return '默认站点 (Default)';
+  }
+  return value;
+}
+
 async function loadData() {
   try {
-    const [domainRes, settingsRes] = await Promise.all([
-      fetchDomainList(),
+    const [siteRes, settingsRes] = await Promise.all([
+      fetchSiteList(),
       fetchFeatureSettings()
     ]);
     
-    allDomains.value = domainRes.domains || [];
+    allDomains.value = siteRes.sites || [];
     if (settingsRes.visibleDomains) {
       visibleList.value = settingsRes.visibleDomains;
     } else {

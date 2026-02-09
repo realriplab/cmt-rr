@@ -5,7 +5,6 @@ export const getSites = async (c: Context<{ Bindings: Bindings }>) => {
 	try {
 		const sites = new Set<string>();
 
-		// 1. Get sites from Comment
 		const { results: commentRows } = await c.env.CWD_DB.prepare(
 			'SELECT DISTINCT site_id FROM Comment'
 		).all<{ site_id: string }>();
@@ -16,7 +15,6 @@ export const getSites = async (c: Context<{ Bindings: Bindings }>) => {
 			}
 		}
 
-		// 2. Get sites from page_stats
 		const { results: pageRows } = await c.env.CWD_DB.prepare(
 			'SELECT DISTINCT site_id FROM page_stats'
 		).all<{ site_id: string }>();
@@ -27,16 +25,15 @@ export const getSites = async (c: Context<{ Bindings: Bindings }>) => {
 			}
 		}
 
-        // 3. Get sites from page_visit_daily
-        const { results: dailyRows } = await c.env.CWD_DB.prepare(
-            'SELECT DISTINCT site_id FROM page_visit_daily'
-        ).all<{ site_id: string }>();
+		const { results: dailyRows } = await c.env.CWD_DB.prepare(
+			'SELECT DISTINCT site_id FROM page_visit_daily'
+		).all<{ site_id: string }>();
 
-        for (const row of dailyRows) {
-            if (row.site_id !== undefined && row.site_id !== null) {
-                sites.add(row.site_id);
-            }
-        }
+		for (const row of dailyRows) {
+			if (row.site_id !== undefined && row.site_id !== null) {
+				sites.add(row.site_id);
+			}
+		}
 
 		const list = Array.from(sites);
 		list.sort();
