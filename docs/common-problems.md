@@ -14,3 +14,5 @@ WHERE post_url LIKE '%example.com%';
 ```
 
 运行以上 SQL 语句后，评论区就会显示带有 `abc` siteId 的评论数据了。
+
+![](https://github.com/user-attachments/assets/ccfb31c9-8001-4174-b918-d3d8826c6617)
