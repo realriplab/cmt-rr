@@ -30,7 +30,15 @@ export const getComments = async (c: Context<{ Bindings: Bindings }>) => {
       slugList = Array.from(new Set([withSlash, withoutSlash]))
     }
   } catch {
-    slugList = [postSlug]
+    const path = postSlug.split('?')[0].split('#')[0]
+    if (path === '/' || path === '') {
+      slugList = ['/']
+    } else {
+      const hasTrailingSlash = path.endsWith('/')
+      const withSlash = hasTrailingSlash ? path : path + '/'
+      const withoutSlash = hasTrailingSlash ? path.slice(0, -1) : path
+      slugList = Array.from(new Set([withSlash, withoutSlash]))
+    }
   }
 
   try {
