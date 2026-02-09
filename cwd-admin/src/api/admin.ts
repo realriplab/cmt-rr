@@ -342,8 +342,14 @@ export function fetchSiteList(): Promise<SiteListResponse> {
 	return get<SiteListResponse>('/admin/stats/sites');
 }
 
-export function fetchLikeStats(): Promise<LikeStatsResponse> {
-	return get<LikeStatsResponse>('/admin/likes/stats');
+export function fetchLikeStats(siteId?: string): Promise<LikeStatsResponse> {
+	const searchParams = new URLSearchParams();
+	if (siteId && siteId !== 'default') {
+		searchParams.set('siteId', siteId);
+	}
+	const query = searchParams.toString();
+	const url = query ? `/admin/likes/stats?${query}` : '/admin/likes/stats';
+	return get<LikeStatsResponse>(url);
 }
 
 export function fetchFeatureSettings(): Promise<FeatureSettingsResponse> {

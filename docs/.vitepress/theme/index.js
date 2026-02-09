@@ -11,7 +11,6 @@ export default {
 
 		return h(Layout, null, {
 			'doc-footer-before': () => h(FooterDoc),
-			'home-features-after': () => h('div', { class: 'extra-class' }, [h(FooterDoc)]),
 			'nav-bar-content-after': () => h(GitHubStar),
 		});
 	},

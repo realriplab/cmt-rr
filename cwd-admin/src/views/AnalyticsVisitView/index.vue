@@ -430,7 +430,7 @@ async function loadData() {
     const [overviewRes, pagesRes, likeStatsRes] = await Promise.all([
       fetchVisitOverview(domain),
       fetchVisitPages(domain, order),
-      fetchLikeStats(),
+      fetchLikeStats(domain),
     ]);
     overview.value = {
       totalPv: overviewRes.totalPv,
@@ -446,7 +446,7 @@ async function loadData() {
         : [],
     };
     const likeItemsRaw = Array.isArray(likeStatsRes.items) ? likeStatsRes.items : [];
-    likeStatsItems.value = filterLikeStatsByDomain(likeItemsRaw, domain);
+    likeStatsItems.value = likeItemsRaw;
     const pageItemsByPv = Array.isArray(pagesRes.itemsByPv)
       ? pagesRes.itemsByPv
       : [];
