@@ -273,6 +273,9 @@ function renderDomainPieChart() {
   }
   if (!domainPieChartInstance) {
     domainPieChartInstance = echarts.init(el);
+  } else if (domainPieChartInstance.getDom() !== el) {
+    domainPieChartInstance.dispose();
+    domainPieChartInstance = echarts.init(el);
   }
   if (!domainStats.value.length) {
     domainPieChartInstance.clear();
