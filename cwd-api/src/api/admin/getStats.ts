@@ -17,15 +17,9 @@ export const getStats = async (c: Context<{ Bindings: Bindings }>) => {
 		const rawSiteId = c.req.query('siteId');
 		const siteId = rawSiteId && rawSiteId !== 'default' ? rawSiteId : null;
 
-		let sql = 'SELECT created, status, site_id FROM Comment';
-		const params: any[] = [];
-
-		if (siteId) {
-			sql += ' WHERE site_id = ?';
-			params.push(siteId);
-		}
-
-		const { results } = await c.env.CWD_DB.prepare(sql).bind(...params).all<{
+		const { results } = await c.env.CWD_DB.prepare(
+			'SELECT created, status, site_id FROM Comment'
+		).all<{
 			created: number;
 			status: string;
 			site_id: string | null;
@@ -65,7 +59,16 @@ export const getStats = async (c: Context<{ Bindings: Bindings }>) => {
 			} else if (row.status === 'rejected') {
 				counts.rejected += 1;
 			}
+		}
 
+		const rowsForSummary = siteId
+			? results.filter((row) => {
+					const key = row.site_id && row.site_id.trim() ? row.site_id.trim() : 'default';
+					return key === siteId;
+			  })
+			: results;
+
+		for (const row of rowsForSummary) {
 			summary.total += 1;
 			if (row.status === 'approved') {
 				summary.approved += 1;
