@@ -64,7 +64,7 @@ export const locales = {
 		verifyAdmin: '退出验证',
 		formTitle: '发表评论',
 		loadMore: '加载更多',
-		noComments: '暂无评论',
+		noComments: '暂无评论，快来抢沙发吧！',
 		delete: '删除',
 		confirmDelete: '确定删除这条评论吗？',
 		deleteSuccess: '删除成功',

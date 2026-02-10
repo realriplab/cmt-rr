@@ -169,7 +169,7 @@ export class CWDComments {
 				});
 
 				// 设置语言
-				let lang = serverConfig.widgetLanguage || 'auto';
+				let lang = this.config.lang || serverConfig.widgetLanguage || 'auto';
 				if (lang === 'auto' && typeof navigator !== 'undefined') {
 					const browserLang = navigator.language || navigator.userLanguage;
 					if (browserLang.toLowerCase().startsWith('en')) {
@@ -194,7 +194,7 @@ export class CWDComments {
 				}
 			} else {
 				// 即使没有域名限制，也需要设置语言
-				let lang = serverConfig.widgetLanguage || 'auto';
+				let lang = this.config.lang || serverConfig.widgetLanguage || 'auto';
 				if (lang === 'auto' && typeof navigator !== 'undefined') {
 					const browserLang = navigator.language || navigator.userLanguage;
 					if (browserLang.toLowerCase().startsWith('en')) {

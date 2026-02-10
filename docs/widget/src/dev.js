@@ -51,12 +51,14 @@ function populateInputs(config) {
 	const avatarPrefixInput = document.getElementById('avatarPrefix');
 	const siteIdInput = document.getElementById('siteId');
 	const postSlugInput = document.getElementById('postSlug');
+	const langSelect = document.getElementById('lang');
 
 	if (apiBaseUrlInput) apiBaseUrlInput.value = config.apiBaseUrl || DEFAULT_CONFIG.apiBaseUrl;
 	if (themeSelect) themeSelect.value = config.theme || DEFAULT_CONFIG.theme;
 	if (avatarPrefixInput) avatarPrefixInput.value = config.avatarPrefix || DEFAULT_CONFIG.avatarPrefix;
 	if (siteIdInput) siteIdInput.value = config.siteId || DEFAULT_CONFIG.siteId || '';
 	if (postSlugInput) postSlugInput.value = config.postSlug || DEFAULT_CONFIG.postSlug || '';
+	if (langSelect) langSelect.value = config.lang || DEFAULT_CONFIG.lang;
 }
 
 /**
@@ -67,7 +69,8 @@ function getConfigFromInputs() {
 	const theme = document.getElementById('theme')?.value || DEFAULT_CONFIG.theme;
 	const siteId = document.getElementById('siteId')?.value || DEFAULT_CONFIG.siteId || '';
 	const postSlug = document.getElementById('postSlug')?.value || DEFAULT_CONFIG.postSlug || '';
-	return { apiBaseUrl, theme, siteId, postSlug };
+	const lang = document.getElementById('lang')?.value || DEFAULT_CONFIG.lang;
+	return { apiBaseUrl, theme, siteId, postSlug, lang };
 }
 
 /**
@@ -98,6 +101,7 @@ async function initWidget() {
 			apiBaseUrl: config.apiBaseUrl,
 			siteId: config.siteId,
 			postSlug: config.postSlug,
+			lang: config.lang,
 		});
 		widgetInstance.mount();
 	} catch (error) {}
