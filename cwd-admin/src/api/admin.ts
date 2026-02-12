@@ -424,5 +424,9 @@ export function deleteS3Backup(key: string): Promise<{ message: string }> {
 }
 
 export function downloadS3BackupUrl(key: string): string {
-	return `/admin/backup/s3/download?key=${encodeURIComponent(key)}`;
+	const rawEnvApiBaseUrl = (import.meta.env.VITE_API_BASE_URL || '').trim();
+	const stored = (localStorage.getItem('cwd_admin_api_base_url') || '').trim();
+	const source = stored || rawEnvApiBaseUrl;
+	const apiBaseUrl = source.replace(/\/+$/, '');
+	return `${apiBaseUrl}/admin/backup/s3/download?key=${encodeURIComponent(key)}`;
 }

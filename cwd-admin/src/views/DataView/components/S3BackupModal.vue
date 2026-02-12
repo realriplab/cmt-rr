@@ -57,9 +57,9 @@ import { useI18n } from "vue-i18n";
 import {
   fetchS3BackupList,
   deleteS3Backup,
-  downloadS3BackupUrl,
   S3BackupItem,
 } from "../../../api/admin";
+import { getApiBaseUrl } from "../../../api/http";
 
 const props = defineProps<{
   visible: boolean;
@@ -83,9 +83,34 @@ const handleClose = () => {
   emit("close");
 };
 
-const handleDownload = (key: string) => {
-  const url = downloadS3BackupUrl(key);
-  window.open(url, "_blank");
+const handleDownload = async (key: string) => {
+  try {
+    const apiBaseUrl = getApiBaseUrl();
+    const token = localStorage.getItem('cwd_admin_token');
+    const url = `${apiBaseUrl}/admin/backup/s3/download?key=${encodeURIComponent(key)}`;
+
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+    });
+
+    if (!res.ok) {
+      throw new Error(`下载失败: ${res.status} ${res.statusText}`);
+    }
+
+    const blob = await res.blob();
+    const fileName = key;
+
+    const a = document.createElement('a');
+    a.href = window.URL.createObjectURL(blob);
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(a.href);
+    document.body.removeChild(a);
+  } catch (e: any) {
+    console.error('Download error:', e);
+  }
 };
 
 const handleDelete = async (key: string) => {
