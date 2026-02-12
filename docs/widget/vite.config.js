@@ -11,13 +11,20 @@ function copyDtsPlugin() {
     name: 'copy-dts',
     closeBundle() {
       const src = resolve(__dirname, 'src/index.d.ts');
-      const dest = resolve(__dirname, 'dist/index.d.ts');
-      try {
-        copyFileSync(src, dest);
-        console.log(`[copy-dts] Copied ${src} to ${dest}`);
-      } catch (e) {
-        console.error(`[copy-dts] Failed to copy .d.ts file: ${e}`);
-      }
+      const dests = [
+        resolve(__dirname, 'dist/index.d.ts'),
+        resolve(__dirname, 'dist/cwd.es.d.ts'),
+        resolve(__dirname, 'dist/cwd.umd.d.ts')
+      ];
+      
+      dests.forEach(dest => {
+        try {
+          copyFileSync(src, dest);
+          console.log(`[copy-dts] Copied ${src} to ${dest}`);
+        } catch (e) {
+          console.error(`[copy-dts] Failed to copy .d.ts file to ${dest}: ${e}`);
+        }
+      });
     }
   }
 }
