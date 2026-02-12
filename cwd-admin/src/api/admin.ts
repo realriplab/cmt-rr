@@ -388,3 +388,23 @@ export function setupTelegramWebhook(): Promise<{ message: string; webhookUrl: s
 export function sendTelegramTestMessage(): Promise<{ message: string }> {
 	return post<{ message: string }>('/admin/settings/telegram/test', {});
 }
+
+export type S3SettingsResponse = {
+	endpoint: string;
+	accessKeyId: string;
+	secretAccessKey: string;
+	bucket: string;
+	region: string;
+};
+
+export function fetchS3Settings(): Promise<S3SettingsResponse> {
+	return get<S3SettingsResponse>('/admin/settings/s3');
+}
+
+export function saveS3Settings(data: S3SettingsResponse): Promise<{ message: string }> {
+	return put<{ message: string }>('/admin/settings/s3', data);
+}
+
+export function triggerS3Backup(): Promise<{ message: string; file: string }> {
+	return post<{ message: string; file: string }>('/admin/backup/s3', {});
+}

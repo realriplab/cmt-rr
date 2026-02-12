@@ -35,6 +35,8 @@ import { listLikes } from './api/admin/listLikes';
 import { getLikeStats } from './api/admin/likeStats';
 import { getFeatureSettings, updateFeatureSettings } from './api/admin/featureSettings';
 import { getTelegramSettings, updateTelegramSettings, setupTelegramWebhook, testTelegramMessage } from './api/admin/telegramSettings';
+import { getS3Settings, updateS3Settings } from './api/admin/s3Settings';
+import { triggerS3Backup } from './api/admin/triggerS3Backup';
 import { telegramWebhook } from './api/telegram/webhook';
 import { ensureSchema } from './utils/dbMigration';
 
@@ -339,6 +341,10 @@ app.get('/admin/settings/telegram', getTelegramSettings);
 app.put('/admin/settings/telegram', updateTelegramSettings);
 app.post('/admin/settings/telegram/setup', setupTelegramWebhook);
 app.post('/admin/settings/telegram/test', testTelegramMessage);
+
+app.get('/admin/settings/s3', getS3Settings);
+app.put('/admin/settings/s3', updateS3Settings);
+app.post('/admin/backup/s3', triggerS3Backup);
 
 app.get('/admin/settings/admin-display', async (c) => {
 	try {

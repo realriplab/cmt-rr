@@ -109,6 +109,62 @@
       </div>
     </div>
 
+    <!-- 5. S3 备份 -->
+    <div class="card">
+      <h3 class="card-title">{{ t("data.sections.s3.title") }}</h3>
+      <p class="card-desc">{{ t("data.sections.s3.desc") }}</p>
+
+      <div class="form-group">
+        <label class="form-label">{{ t("data.sections.s3.endpoint") }}</label>
+        <input
+          v-model="s3Config.endpoint"
+          class="form-input"
+          :placeholder="t('data.sections.s3.endpointHint')"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half">
+          <label class="form-label">{{ t("data.sections.s3.bucket") }}</label>
+          <input v-model="s3Config.bucket" class="form-input" />
+        </div>
+        <div class="form-group half">
+          <label class="form-label">{{ t("data.sections.s3.region") }}</label>
+          <input
+            v-model="s3Config.region"
+            class="form-input"
+            :placeholder="t('data.sections.s3.regionHint')"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group half">
+          <label class="form-label">{{ t("data.sections.s3.accessKey") }}</label>
+          <input v-model="s3Config.accessKeyId" class="form-input" />
+        </div>
+        <div class="form-group half">
+          <label class="form-label">{{ t("data.sections.s3.secretKey") }}</label>
+          <input v-model="s3Config.secretAccessKey" class="form-input" />
+        </div>
+      </div>
+
+      <div class="action-row" style="margin-top: 16px">
+        <button class="card-button primary" :disabled="s3Saving" @click="handleSaveS3">
+          {{ s3Saving ? t("data.sections.s3.saving") : t("data.sections.s3.save") }}
+        </button>
+        <button
+          class="card-button secondary"
+          :disabled="s3BackingUp"
+          @click="handleS3Backup"
+        >
+          {{
+            s3BackingUp ? t("data.sections.s3.backingUp") : t("data.sections.s3.backup")
+          }}
+        </button>
+      </div>
+    </div>
+
     <!-- 隐藏的文件输入框 -->
     <input
       type="file"
@@ -161,7 +217,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   exportComments,
@@ -172,6 +228,10 @@ import {
   importStats,
   exportBackup,
   importBackup,
+  fetchS3Settings,
+  saveS3Settings,
+  triggerS3Backup,
+  type S3SettingsResponse,
 } from "../../api/admin";
 import { useSite } from "../../composables/useSite";
 
@@ -195,6 +255,52 @@ const showPrefixModal = ref(false);
 const urlPrefix = ref("");
 const missingPrefixCount = ref(0);
 const pendingJson = ref<any[]>([]);
+const s3Config = ref<S3SettingsResponse>({
+  endpoint: "",
+  accessKeyId: "",
+  secretAccessKey: "",
+  bucket: "",
+  region: "auto",
+});
+const s3Saving = ref(false);
+const s3BackingUp = ref(false);
+
+async function loadS3Config() {
+  try {
+    const res = await fetchS3Settings();
+    s3Config.value = res;
+  } catch (e) {
+    // silent fail or log
+  }
+}
+
+async function handleSaveS3() {
+  s3Saving.value = true;
+  try {
+    await saveS3Settings(s3Config.value);
+    showToast(t("common.saveSuccess"));
+  } catch (e: any) {
+    showToast(e.message || t("common.saveFailed"), "error");
+  } finally {
+    s3Saving.value = false;
+  }
+}
+
+async function handleS3Backup() {
+  s3BackingUp.value = true;
+  try {
+    const res = await triggerS3Backup();
+    showToast(t("data.sections.s3.success", { file: res.file }));
+  } catch (e: any) {
+    showToast(e.message || t("data.messages.exportFailed"), "error");
+  } finally {
+    s3BackingUp.value = false;
+  }
+}
+
+onMounted(() => {
+  loadS3Config();
+});
 
 function showToast(msg: string, type: "success" | "error" = "success") {
   toastMessage.value = msg;
@@ -424,4 +530,26 @@ function joinUrl(prefix: string, path: string): string {
 
 <style scoped lang="less">
 @import "../../styles/components/data.less";
+
+.form-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.form-group {
+  margin-top: 12px;
+}
+
+.form-group.half {
+  flex: 1;
+  margin-top: 0;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: var(--text-primary);
+}
 </style>
